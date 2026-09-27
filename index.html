@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Мир больших денег — настольная игра</title>
+<meta name="description" content="Настольная игра — симулятор арбитражного процесса. Правила, карты, компании и файлы для печати прототипа.">
+<meta name="theme-color" content="#0b0812">
+<meta property="og:title" content="Мир больших денег">
+<meta property="og:description" content="Настольная игра — симулятор арбитражного процесса">
+<meta property="og:image" content="img/parts/hero-city.webp">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='10' fill='%230b0812'/><text x='32' y='47' font-size='40' text-anchor='middle' fill='%23d6ad5c' font-family='Arial' font-weight='700'>Ъ</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#0b0812; --panel:#15101d; --panel-2:#1c1627; --line:#3b3047;
+  --gold:#d6ad5c; --gold-dim:#a88340; --text:#eee6d6; --muted:#aba2b8;
+  --red:#c8403f; --green:#4f9f6b; --violet:#7b4bb3;
+  --display:"Oswald","Arial Narrow","Roboto Condensed",sans-serif;
+  --body:"PT Serif",Georgia,"Times New Roman",serif;
+  --wrap:1120px;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(64px + env(safe-area-inset-top,0px))}
+body{margin:0;background:var(--night);color:var(--text);font:18px/1.62 var(--body);-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%;display:block}
+a{color:var(--gold)}
+a:hover{color:#f0cd82}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 20px}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(11,8,18,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;gap:24px;height:60px}
+.brand{font:700 20px/1 var(--display);color:var(--text);text-decoration:none;white-space:nowrap;letter-spacing:.02em}
+.brand b{color:var(--gold);font-weight:700}
+.nav{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.nav::-webkit-scrollbar{display:none}
+.nav a{font:500 15px/1 var(--display);color:var(--muted);text-decoration:none;white-space:nowrap;padding:8px 0;letter-spacing:.03em}
+.nav a:hover{color:var(--text)}
+@media (max-width:760px){
+  .top .wrap{flex-direction:column;align-items:stretch;height:auto;gap:0;padding-top:10px}
+  .nav{margin:0 -20px;padding:4px 20px 6px;gap:20px}
+}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero-city{position:absolute;inset:auto 0 0 0;height:78%;background:url(img/parts/hero-city.webp) center bottom/cover no-repeat;opacity:.55;-webkit-mask-image:linear-gradient(to top,#000 40%,transparent);mask-image:linear-gradient(to top,#000 40%,transparent)}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.15fr .85fr;gap:40px;align-items:center;min-height:min(86vh,760px);padding-top:56px;padding-bottom:64px}
+.logo{font:700 clamp(46px,8.4vw,104px)/.92 var(--display);text-transform:uppercase;margin:0;letter-spacing:.005em}
+.logo span{display:block}
+.logo .g{color:var(--gold)}
+.tagline{font:italic 400 clamp(19px,2.2vw,24px)/1.4 var(--body);color:#e4d3ab;margin:22px 0 0;max-width:30ch}
+.facts{display:flex;gap:0;margin:34px 0 0;padding:0;list-style:none;border-top:1px solid var(--line);border-bottom:1px solid var(--line);max-width:460px}
+.facts li{flex:1;padding:14px 0 12px;text-align:left}
+.facts li+li{border-left:1px solid var(--line);padding-left:18px}
+.facts strong{display:block;font:600 28px/1 var(--display);color:var(--text)}
+.facts span{font-size:15px;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 17px/1 var(--display);letter-spacing:.03em;text-decoration:none;padding:15px 22px;border-radius:4px;border:1px solid var(--gold);cursor:pointer}
+.btn-gold{background:var(--gold);color:#1a1206}
+.btn-gold:hover{background:#e6c173;color:#1a1206}
+.btn-line{background:transparent;color:var(--gold)}
+.btn-line:hover{background:rgba(214,173,92,.1);color:var(--gold)}
+
+.fan{position:relative;height:420px}
+.fan img{position:absolute;left:50%;top:50%;width:190px;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.6);transform-origin:50% 120%;margin:-133px 0 0 -95px;animation:fan 1.1s cubic-bezier(.2,.8,.2,1) .25s both}
+.fan img:nth-child(1){--r:-24deg;--x:-120px}
+.fan img:nth-child(2){--r:-8deg;--x:-40px}
+.fan img:nth-child(3){--r:8deg;--x:40px}
+.fan img:nth-child(4){--r:24deg;--x:120px}
+.fan img{transform:translateX(var(--x)) rotate(var(--r))}
+@keyframes fan{from{transform:translateX(0) rotate(0) translateY(30px);opacity:0}to{transform:translateX(var(--x)) rotate(var(--r));opacity:1}}
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;min-height:0;padding-top:40px;gap:8px}
+  .fan{height:250px;order:-1;margin-top:-6px}
+  .fan img{width:112px;margin:-78px 0 0 -56px}
+  .fan img:nth-child(1){--x:-72px;--r:-18deg}.fan img:nth-child(2){--x:-24px;--r:-6deg}.fan img:nth-child(3){--x:24px;--r:6deg}.fan img:nth-child(4){--x:72px;--r:18deg}
+}
+
+/* sections */
+section{padding:88px 0;border-bottom:1px solid var(--line)}
+.head{margin-bottom:40px;max-width:720px}
+.head h2{font:600 clamp(32px,4.8vw,50px)/1.05 var(--display);text-transform:uppercase;margin:0;letter-spacing:.01em}
+.head h2 small{display:block;font:500 18px/1.2 var(--display);color:var(--gold);text-transform:none;letter-spacing:.04em;margin-bottom:10px}
+.head p{color:var(--muted);margin:16px 0 0;max-width:62ch}
+.lead{font-size:20px;max-width:60ch}
+.lead + .lead{margin-top:0}
+
+/* about */
+.about{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.about p{margin:0 0 18px}
+.table-svg{width:100%;max-width:420px;margin:0 auto}
+.note{font-size:16px;color:var(--muted);border-left:2px solid var(--gold-dim);padding:2px 0 2px 16px;margin-top:26px}
+@media (max-width:860px){.about{grid-template-columns:1fr;gap:28px}}
+
+/* round */
+.phases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:0;border-top:1px solid var(--gold-dim)}
+.phases li{padding:22px 20px 8px 0;position:relative}
+.phases li+li{padding-left:20px;border-left:1px solid var(--line)}
+.phases .n{font:700 44px/1 var(--display);color:var(--gold)}
+.phases h3{font:600 20px/1.15 var(--display);margin:12px 0 8px;letter-spacing:.02em}
+.phases p{font-size:16px;line-height:1.5;color:var(--muted);margin:0}
+@media (max-width:900px){
+  .phases{grid-template-columns:1fr}
+  .phases li,.phases li+li{display:grid;grid-template-columns:52px 1fr;column-gap:12px;padding:18px 0;border-left:0;border-bottom:1px solid var(--line)}
+  .phases .n{grid-row:span 2;font-size:36px}
+  .phases h3{margin:2px 0 4px}
+}
+
+.court{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:64px}
+.court h3{font:600 24px/1.1 var(--display);margin:0 0 16px;text-transform:uppercase;letter-spacing:.01em}
+.formula{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:22px 24px}
+.formula p{margin:0 0 14px;font-size:17px}
+.formula p:last-child{margin:0}
+.formula b{font:600 18px var(--display);letter-spacing:.02em}
+.side-red b{color:#ec7a72}.side-green b{color:#7fcf99}
+.outcomes{list-style:none;margin:0;padding:0}
+.outcomes li{padding:14px 0;border-bottom:1px solid var(--line);font-size:17px}
+.outcomes li:first-child{padding-top:0}
+.outcomes strong{font:600 18px var(--display);letter-spacing:.02em;display:block;margin-bottom:2px}
+@media (max-width:860px){.court{grid-template-columns:1fr}}
+
+/* cards */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;align-items:center}
+.chip{font:500 16px/1 var(--display);letter-spacing:.03em;color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.chip[aria-pressed="true"]{color:var(--text);border-color:var(--gold);background:rgba(214,173,92,.1)}
+.chip .dot{width:9px;height:9px;border-radius:50%}
+.chip-flip{margin-left:auto}
+@media (max-width:600px){.chip-flip{margin-left:0}}
+.deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:34px 26px}
+@media (max-width:520px){.deck-grid{grid-template-columns:repeat(2,1fr);gap:26px 14px}}
+.item[hidden]{display:none}
+.flip{display:block;width:100%;aspect-ratio:496/693;padding:0;border:0;background:none;cursor:pointer;perspective:1200px;border-radius:10px}
+.flip-in{display:block;position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.7,.2,1);transform-style:preserve-3d}
+.flip.on .flip-in{transform:rotateY(180deg)}
+@media (hover:hover){.flip:hover .flip-in{transform:rotateY(180deg)}}
+.face{display:block;position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;border-radius:10px;overflow:hidden;box-shadow:0 14px 30px rgba(0,0,0,.55)}
+.face img{width:100%;height:100%;object-fit:cover}
+.face.front{transform:rotateY(180deg)}
+.cap{margin-top:14px;font-size:15.5px;line-height:1.45;color:var(--muted)}
+.cap strong{display:flex;align-items:center;gap:8px;font:600 17px/1.2 var(--display);color:var(--text);letter-spacing:.02em;margin-bottom:4px}
+.cap .dot{width:8px;height:8px;border-radius:50%;flex:none}
+.d-red{background:var(--red)}.d-green{background:var(--green)}.d-gold{background:var(--gold)}.d-amber{background:#e0a526}
+.hint{font-size:16px;color:var(--muted);margin:-12px 0 26px}
+
+/* companies */
+.tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--gold-dim);margin-bottom:48px}
+.tracks div{padding:20px 22px 4px 0}
+.tracks div+div{padding-left:22px;border-left:1px solid var(--line)}
+.tracks h3{font:600 20px/1.2 var(--display);margin:0 0 6px;letter-spacing:.02em}
+.tracks p{margin:0;font-size:16px;color:var(--muted);line-height:1.5}
+@media (max-width:760px){.tracks{grid-template-columns:1fr}.tracks div,.tracks div+div{padding:16px 0;border-left:0;border-bottom:1px solid var(--line)}}
+.shelf{-webkit-mask-image:linear-gradient(to right,#000 88%,transparent);mask-image:linear-gradient(to right,#000 88%,transparent);display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 20px 22px;margin:0 -20px;scrollbar-color:var(--gold-dim) transparent}
+.shelf button{flex:0 0 min(300px,74vw);scroll-snap-align:start;padding:0;border:0;background:none;cursor:zoom-in;border-radius:12px}
+.shelf img{width:100%;border-radius:12px;box-shadow:0 12px 26px rgba(0,0,0,.5)}
+
+/* components */
+.kit{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+.kit .board{width:100%;padding:0;border:0;background:none;cursor:zoom-in;border-radius:10px}
+.kit .board img{width:100%;border-radius:10px;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+.kit h3{font:600 22px/1.15 var(--display);margin:0 0 12px;text-transform:uppercase}
+.kit p{margin:0 0 18px}
+.bills{position:relative;height:210px;margin:18px 0 40px}
+.bills img{position:absolute;width:min(300px,70%);border-radius:4px;box-shadow:0 10px 24px rgba(0,0,0,.5)}
+.bills img:nth-child(1){left:0;top:0;transform:rotate(-5deg)}
+.bills img:nth-child(2){left:16%;top:40px;transform:rotate(2deg)}
+.bills img:nth-child(3){left:32%;top:84px;transform:rotate(-1deg)}
+.extras{list-style:none;padding:0;margin:0;columns:2;column-gap:28px;font-size:16px}
+.extras li{break-inside:avoid;padding:9px 0;border-bottom:1px solid var(--line)}
+.extras b{font:600 17px var(--display);color:var(--gold);margin-right:6px}
+@media (max-width:860px){.kit{grid-template-columns:1fr;gap:36px}.extras{columns:1}}
+
+/* downloads */
+.files{list-style:none;margin:0;padding:0;border-top:1px solid var(--gold-dim)}
+.files li{display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)}
+.files h3{font:600 20px/1.2 var(--display);margin:0;letter-spacing:.02em}
+.files p{margin:2px 0 0;font-size:15.5px;color:var(--muted)}
+.files a.dl{font:600 16px/1 var(--display);letter-spacing:.03em;text-decoration:none;border:1px solid var(--gold);border-radius:4px;padding:11px 16px;white-space:nowrap}
+.files a.dl:hover{background:rgba(214,173,92,.1)}
+.files .main h3{font-size:24px}
+.print-tip{margin-top:26px;font-size:16px;color:var(--muted);max-width:70ch}
+
+/* letters */
+.letters{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media (max-width:860px){.letters{grid-template-columns:1fr}}
+.letter{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:26px 24px;display:flex;flex-direction:column;min-height:260px}
+.letter .who{font:600 20px/1.2 var(--display);letter-spacing:.02em;margin:0}
+.letter .role{font-size:15px;color:var(--muted);margin:4px 0 16px}
+.letter blockquote{margin:0 0 18px;font-style:italic;font-size:17px;line-height:1.55;flex:1}
+.letter .open{align-self:flex-start;font:600 16px/1 var(--display);color:var(--gold);background:none;border:1px solid var(--gold);border-radius:4px;padding:10px 14px;cursor:zoom-in}
+.letter.empty{border-style:dashed;align-items:center;justify-content:center;text-align:center;color:var(--muted)}
+.letter.empty .seal{width:54px;height:54px;border-radius:50%;border:1px solid var(--gold-dim);display:grid;place-items:center;font:700 26px var(--display);color:var(--gold-dim);margin-bottom:14px}
+.letter.empty p{margin:0;font-size:16px}
+
+footer{padding:40px 0 56px;color:var(--muted);font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:space-between;align-items:center}
+footer .brand{font-size:18px}
+
+/* lightbox */
+dialog.lb{border:0;padding:0;background:transparent;max-width:min(96vw,1100px);max-height:94vh;overflow:visible}
+dialog.lb::backdrop{background:rgba(5,3,9,.9)}
+dialog.lb img{max-height:88vh;width:auto;max-width:100%;margin:0 auto;border-radius:8px}
+dialog.lb .x{position:absolute;top:-8px;right:-8px;width:44px;height:44px;border-radius:50%;border:1px solid var(--gold);background:var(--night);color:var(--gold);font:600 22px/1 var(--display);cursor:pointer}
+dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:15px}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .fan img{animation:none}
+  .flip-in{transition:none}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top">МИР <b>БОЛЬШИХ</b> ДЕНЕГ</a>
+    <nav class="nav" aria-label="Разделы">
+      <a href="#ob-igre">Об игре</a>
+      <a href="#raund">Раунд</a>
+      <a href="#karty">Карты</a>
+      <a href="#kompanii">Компании</a>
+      <a href="#komplekt">Комплект</a>
+      <a href="#materialy">Материалы</a>
+      <a href="#pisma">Письма</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<div class="hero">
+  <div class="hero-city" aria-hidden="true"></div>
+  <div class="wrap">
+    <div>
+      <h1 class="logo"><span>Мир</span><span class="g">больших</span><span>денег</span></h1>
+      <p class="tagline">Настольная игра — симулятор арбитражного процесса</p>
+      <ul class="facts">
+        <li><strong>2–4</strong><span>игрока</span></li>
+        <li><strong>60–90</strong><span>минут</span></li>
+        <li><strong>14+</strong><span>лет</span></li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn-gold" href="#karty">Посмотреть карты</a>
+        <a class="btn btn-line" href="files/pravila.pdf" download>Скачать правила</a>
+      </div>
+    </div>
+    <div class="fan" aria-hidden="true">
+      <img src="img/cards/back-istec.webp" alt="">
+      <img src="img/cards/back-otvetchik.webp" alt="">
+      <img src="img/cards/back-yuristy.webp" alt="">
+      <img src="img/cards/back-sobytie.webp" alt="">
+    </div>
+  </div>
+</div>
+
+<!-- ОБ ИГРЕ -->
+<section id="ob-igre">
+  <div class="wrap about">
+    <div>
+      <div class="head"><h2><small>Преамбула</small>Суд неизбежен</h2></div>
+      <p class="lead">Каждый игрок управляет крупной компанией. Раунд за раундом компании развивают бизнес, нанимают юристов и судятся друг с другом.</p>
+      <p class="lead">Вы всегда истец для соседа справа и ответчик для соседа слева. Уклониться от процесса нельзя: иск предъявят независимо от вашего желания.</p>
+      <p>Партия — это финансовый год из девяти раундов. Побеждает компания, набравшая больше всех победных очков: их приносят деньги и уровни развития компании. Банкрот выбывает из игры досрочно.</p>
+      <p class="note">Стадии несостоятельности необратимы: наблюдение, финансовое оздоровление и внешнее управление срезают итоговые очки на 25, 50 и 75%, а конкурсное производство выводит компанию из игры.</p>
+    </div>
+    <svg class="table-svg" viewBox="0 0 400 400" role="img" aria-label="Схема стола: каждая из четырёх компаний подаёт иск соседу и одновременно защищается от иска другого соседа">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c8403f"/></marker>
+      </defs>
+      <rect x="110" y="110" width="180" height="180" rx="14" fill="#15101d" stroke="#3b3047"/>
+      <text x="200" y="192" text-anchor="middle" fill="#aba2b8" font-family="PT Serif,Georgia,serif" font-size="15">каждый —</text>
+      <text x="200" y="214" text-anchor="middle" fill="#aba2b8" font-family="PT Serif,Georgia,serif" font-size="15">истец и ответчик</text>
+      <g fill="none" stroke="#c8403f" stroke-width="2.2" marker-end="url(#ar)">
+        <path d="M232 62 Q320 70 336 160"/>
+        <path d="M338 232 Q330 320 240 338"/>
+        <path d="M168 338 Q80 330 64 240"/>
+        <path d="M62 168 Q70 80 160 62"/>
+      </g>
+      <g font-family="Oswald,Arial Narrow,sans-serif" font-weight="600" font-size="17" text-anchor="middle">
+        <circle cx="200" cy="58" r="30" fill="#0b0812" stroke="#d6ad5c" stroke-width="1.5"/><text x="200" y="64" fill="#d6ad5c">А</text>
+        <circle cx="342" cy="200" r="30" fill="#0b0812" stroke="#d6ad5c" stroke-width="1.5"/><text x="342" y="206" fill="#d6ad5c">Б</text>
+        <circle cx="200" cy="342" r="30" fill="#0b0812" stroke="#d6ad5c" stroke-width="1.5"/><text x="200" y="348" fill="#d6ad5c">В</text>
+        <circle cx="58" cy="200" r="30" fill="#0b0812" stroke="#d6ad5c" stroke-width="1.5"/><text x="58" y="206" fill="#d6ad5c">Г</text>
+      </g>
+      <g font-family="PT Serif,Georgia,serif" font-size="14" fill="#ec7a72" font-style="italic">
+        <text x="318" y="92">иск</text><text x="302" y="326">иск</text><text x="56" y="322">иск</text><text x="62" y="96">иск</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<!-- РАУНД -->
+<section id="raund">
+  <div class="wrap">
+    <div class="head">
+      <h2><small>Статья 1</small>Раунд за пять фаз</h2>
+      <p>Фазы идут строго по порядку. За девять раундов компании успевают разбогатеть, нанять партнёров и проиграть пару громких дел.</p>
+    </div>
+    <ol class="phases">
+      <li><span class="n">1</span><h3>Событие</h3><p>Вскрывается карта События, её эффект действует до конца раунда.</p></li>
+      <li><span class="n">2</span><h3>Бухгалтерия</h3><p>Увольнения, доход по треку Экономики и зарплаты юристам.</p></li>
+      <li><span class="n">3</span><h3>Рынок и планирование</h3><p>Торги за юристов, затем до трёх действий: инвестиции, добор карт, кредит.</p></li>
+      <li><span class="n">4</span><h3>Судебные заседания</h3><p>Каждая компания ведёт одно дело как истец и одно как ответчик.</p></li>
+      <li><span class="n">5</span><h3>Несостоятельность</h3><p>Кто не смог заплатить, продвигается на стадию ближе к банкротству.</p></li>
+    </ol>
+
+    <div class="court">
+      <div>
+        <h3>Как решается дело</h3>
+        <div class="formula">
+          <p class="side-red"><b>Сила иска</b> = бонус Юротдела + карты + юристы + судья, если он на стороне истца</p>
+          <p class="side-green"><b>Сила защиты</b> = 1 + бонус Юротдела + карты + юристы + судья, если он на стороне ответчика</p>
+        </div>
+        <p class="note">Настроение судьи определяет кубик ещё до того, как стороны выкладывают карты. Жетоны влияния сдвигают любой бросок на ±1.</p>
+      </div>
+      <div>
+        <h3>Три исхода</h3>
+        <ul class="outcomes">
+          <li><strong>Иск удовлетворён</strong>Ответчик платит цену иска, возвращает пошлину и компенсирует издержки истца до 1 млн.</li>
+          <li><strong>В иске отказано</strong>Истец компенсирует издержки ответчика до 5 млн, пошлина не возвращается.</li>
+          <li><strong>Силы равны</strong>Дело переносится на следующий раунд, никто никому не платит.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КАРТЫ -->
+<section id="karty">
+  <div class="wrap">
+    <div class="head">
+      <h2><small>Статья 2</small>Четыре колоды</h2>
+      <p>В игре 181 карта: иски, защита, юристы разных рангов и события, которые меняют правила на целый раунд.</p>
+    </div>
+    <p class="hint">Нажмите на карту, чтобы перевернуть её.</p>
+    <div class="filters" role="group" aria-label="Фильтр по колодам">
+      <button class="chip" type="button" data-filter="all" aria-pressed="true">Все</button>
+      <button class="chip" type="button" data-filter="istec" aria-pressed="false"><span class="dot d-red"></span>Истец</button>
+      <button class="chip" type="button" data-filter="otvetchik" aria-pressed="false"><span class="dot d-green"></span>Ответчик</button>
+      <button class="chip" type="button" data-filter="yuristy" aria-pressed="false"><span class="dot d-gold"></span>Юристы</button>
+      <button class="chip" type="button" data-filter="sobytiya" aria-pressed="false"><span class="dot d-amber"></span>События</button>
+      <button class="chip chip-flip" type="button" id="flipAll">Перевернуть все</button>
+    </div>
+
+    <div class="deck-grid">
+      <div class="item" data-deck="istec">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта Истца «Видеозапись с монтажом»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-istec.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/istec-montazh.webp" alt="Карта «Видеозапись с монтажом»: сила +8, издержки 3 млн" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-red"></span>Колода Истца</strong>Самая сильная карта нападения: +8 к силе иска, но 3 млн издержек.</p>
+      </div>
+      <div class="item" data-deck="istec">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта Истца «Апелляционная жалоба»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-istec.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/istec-apellyaciya.webp" alt="Карта «Апелляционная жалоба»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-red"></span>Колода Истца</strong>Проиграли дело — обжалуйте: на кубике 3–6 выплаты отменяются.</p>
+      </div>
+      <div class="item" data-deck="otvetchik">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта Ответчика «Встречный иск»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-otvetchik.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/otvetchik-vstrechnyj.webp" alt="Карта «Встречный иск»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-green"></span>Колода Ответчика</strong>Защита, которая приносит деньги: при победе вы получаете ещё половину цены иска.</p>
+      </div>
+      <div class="item" data-deck="otvetchik">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта Ответчика «Заявление о фальсификации»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-otvetchik.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/otvetchik-falsifikaciya.webp" alt="Карта «Заявление о фальсификации»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-green"></span>Колода Ответчика</strong>Выбивает из процесса одну уязвимую карту истца.</p>
+      </div>
+      <div class="item" data-deck="yuristy">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта юриста «Помощник юриста»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-yuristy.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/yurist-pomoshnik.webp" alt="Карта «Помощник юриста»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-gold"></span>Колода Юристов</strong>Дешёвый найм без зарплаты. Даёт +1 к силе, но только на шестёрке.</p>
+      </div>
+      <div class="item" data-deck="yuristy">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта юриста «Юрист»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-yuristy.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/yurist-yurist.webp" alt="Карта «Юрист»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-gold"></span>Колода Юристов</strong>+3 к силе на 4–6. С ним в штате можно подавать иски на 6 млн.</p>
+      </div>
+      <div class="item" data-deck="yuristy">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта юриста «Партнёр»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-yuristy.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/yurist-partner.webp" alt="Карта «Партнёр»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-gold"></span>Колода Юристов</strong>+5 почти на любом броске и доступ к искам на 10 млн. Стоит 8 млн и 3 млн зарплаты за раунд.</p>
+      </div>
+      <div class="item" data-deck="sobytiya">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта События «Налоговая проверка»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-sobytie.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/sobytie-nalog.webp" alt="Карта «Налоговая проверка»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-amber"></span>Колода Событий</strong>Богатые платят: каждая компания с Экономикой 5+ отдаёт банку 3 млн.</p>
+      </div>
+      <div class="item" data-deck="sobytiya">
+        <button class="flip" type="button" aria-pressed="false" aria-label="Карта События «Повышение ключевой ставки»">
+          <span class="flip-in"><span class="face back"><img src="img/cards/back-sobytie.webp" alt="" loading="lazy"></span><span class="face front"><img src="img/cards/sobytie-stavka.webp" alt="Карта «Повышение ключевой ставки»" loading="lazy"></span></span>
+        </button>
+        <p class="cap"><strong><span class="dot d-amber"></span>Колода Событий</strong>Прокачка дорожает на 2 млн, долг по кредиту вырастает на 1 млн.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КОМПАНИИ -->
+<section id="kompanii">
+  <div class="wrap">
+    <div class="head">
+      <h2><small>Статья 3</small>Десять компаний</h2>
+      <p>У каждой компании свой стартовый капитал, уровни развития и две способности: одна работает всю игру, другую можно применить один раз. Нажмите на карту, чтобы рассмотреть её.</p>
+    </div>
+    <div class="tracks">
+      <div><h3>Экономика</h3><p>Доход в каждом раунде: от 1 млн на первом уровне до 15 млн на восьмом.</p></div>
+      <div><h3>Юротдел</h3><p>Каждые два уровня дают +1 к силе и иска, и защиты. Открывает крупные иски.</p></div>
+      <div><h3>Административный ресурс</h3><p>Жетоны влияния: каждый сдвигает любой бросок на ±1, свой или чужой.</p></div>
+    </div>
+    <div class="shelf" tabindex="0" aria-label="Карты компаний, прокручиваются по горизонтали">
+      <button type="button" data-zoom="img/companies/neftegaz.webp" data-cap="ПАО «НефтеГазДобыча»"><img src="img/companies/neftegaz.webp" alt="ПАО «НефтеГазДобыча»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/innovacii-it.webp" data-cap="ООО «Инновации ИТ»"><img src="img/companies/innovacii-it.webp" alt="ООО «Инновации ИТ»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/monolit.webp" data-cap="ГК «Монолит Строй»"><img src="img/companies/monolit.webp" alt="ГК «Монолит Строй»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/gosprombank.webp" data-cap="ПАО «ГосПромБанк»"><img src="img/companies/gosprombank.webp" alt="ПАО «ГосПромБанк»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/rodnye-polya.webp" data-cap="Агрохолдинг «Родные Поля»"><img src="img/companies/rodnye-polya.webp" alt="Агрохолдинг «Родные Поля»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/x-riteil.webp" data-cap="X-Ритейл Групп"><img src="img/companies/x-riteil.webp" alt="X-Ритейл Групп" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/rosmashnadzor.webp" data-cap="ФГУП «РосМашНадзор»"><img src="img/companies/rosmashnadzor.webp" alt="ФГУП «РосМашНадзор»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/pravda-tv.webp" data-cap="Медиахолдинг «Правда-ТВ»"><img src="img/companies/pravda-tv.webp" alt="Медиахолдинг «Правда-ТВ»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/zdravbio.webp" data-cap="«ЗдравБио»"><img src="img/companies/zdravbio.webp" alt="«ЗдравБио»" loading="lazy"></button>
+      <button type="button" data-zoom="img/companies/ilinka.webp" data-cap="ЮБ «Ильинка и Партнёры»"><img src="img/companies/ilinka.webp" alt="ЮБ «Ильинка и Партнёры»" loading="lazy"></button>
+    </div>
+  </div>
+</section>
+
+<!-- КОМПЛЕКТ -->
+<section id="komplekt">
+  <div class="wrap kit">
+    <button class="board" type="button" data-zoom="img/parts/planshet.webp" data-cap="Планшет игрока"><img src="img/parts/planshet.webp" alt="Планшет игрока: место для карты компании, три трека развития, штат юристов и стадии несостоятельности" loading="lazy"></button>
+    <div>
+      <div class="head"><h2><small>Статья 4</small>Комплект игры</h2></div>
+      <h3>Планшет игрока</h3>
+      <p>Сюда вставляется карта компании. На планшете три трека развития, места для трёх юристов, шкала несостоятельности и памятка по раунду и ходу суда.</p>
+      <h3>Деньги</h3>
+      <p>Купюры по 1, 5 и 10 млн — «билеты юридической биржи».</p>
+      <div class="bills" aria-hidden="true">
+        <img src="img/parts/bill-1.webp" alt="" loading="lazy">
+        <img src="img/parts/bill-5.webp" alt="" loading="lazy">
+        <img src="img/parts/bill-10.webp" alt="" loading="lazy">
+      </div>
+      <h3>Для прототипа добавьте</h3>
+      <ul class="extras">
+        <li><b>4</b>кубика D6</li>
+        <li><b>4</b>фишки ставок разных цветов</li>
+        <li><b>12</b>фишек-трекеров, по 3 на игрока</li>
+        <li><b>32</b>жетона влияния: монеты или камешки</li>
+        <li><b>4</b>маркера стадий несостоятельности</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- МАТЕРИАЛЫ -->
+<section id="materialy">
+  <div class="wrap">
+    <div class="head">
+      <h2><small>Приложение 1</small>Материалы</h2>
+      <p>Всё, чтобы разобраться в правилах и собрать прототип самостоятельно. Все файлы в формате PDF, листы A4.</p>
+    </div>
+    <ul class="files">
+      <li class="main"><div><h3>Свод правил</h3><p>9 страниц, 58 КБ</p></div><a class="dl" href="files/pravila.pdf" download>Скачать</a></li>
+      <li><div><h3>Карты, лицевая сторона</h3><p>24 листа, 2 МБ</p></div><a class="dl" href="files/karty-licevaya.pdf" download>Скачать</a></li>
+      <li><div><h3>Карты, рубашки</h3><p>24 листа, 2 МБ</p></div><a class="dl" href="files/karty-rubashki.pdf" download>Скачать</a></li>
+      <li><div><h3>Планшеты игроков, лицевая сторона</h3><p>4 листа, 0,8 МБ</p></div><a class="dl" href="files/planshet-licevaya.pdf" download>Скачать</a></li>
+      <li><div><h3>Планшеты игроков, оборот</h3><p>4 листа, 0,4 МБ</p></div><a class="dl" href="files/planshet-rubashka.pdf" download>Скачать</a></li>
+      <li><div><h3>Игровые деньги</h3><p>12 листов, 0,3 МБ</p></div><a class="dl" href="files/kupyury.pdf" download>Скачать</a></li>
+    </ul>
+    <p class="print-tip">Карты печатайте двусторонне: лист N лицевых сторон на лист N рубашек. Можно напечатать только лица и использовать непрозрачные протекторы. Планшеты лучше печатать на плотной бумаге и не разрезать.</p>
+  </div>
+</section>
+
+<!-- ПИСЬМА ПАРТНЁРОВ -->
+<section id="pisma">
+  <div class="wrap">
+    <div class="head">
+      <h2><small>Приложение 2</small>Письма партнёров</h2>
+    </div>
+    <div class="letters">
+      <!--
+        КАК ДОБАВИТЬ ПИСЬМО
+        1. Положите скан письма в папку img/letters/ (например, letter-1.webp, .jpg или .png).
+        2. Замените один из блоков <div class="letter empty">…</div> на такой:
+
+        <article class="letter">
+          <p class="who">Название организации</p>
+          <p class="role">Имя, должность</p>
+          <blockquote>Короткая цитата из письма, одно-два предложения.</blockquote>
+          <button class="open" type="button" data-zoom="img/letters/letter-1.jpg" data-cap="Письмо от …">Открыть письмо</button>
+        </article>
+      -->
+      <div class="letter empty"><div class="seal">Ъ</div><p>Место для письма партнёра</p></div>
+      <div class="letter empty"><div class="seal">Ъ</div><p>Место для письма партнёра</p></div>
+      <div class="letter empty"><div class="seal">Ъ</div><p>Место для письма партнёра</p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#top">МИР <b>БОЛЬШИХ</b> ДЕНЕГ</a>
+    <span>Настольная игра — симулятор арбитражного процесса, 2026</span>
+  </div>
+</footer>
+
+<dialog class="lb" id="lb" aria-label="Увеличенное изображение">
+  <button class="x" type="button" aria-label="Закрыть">×</button>
+  <img src="" alt="">
+  <p></p>
+</dialog>
+
+<script>
+(function(){
+  // переворот карт
+  var flips = Array.prototype.slice.call(document.querySelectorAll('.flip'));
+  flips.forEach(function(b){
+    b.addEventListener('click', function(){
+      var on = b.classList.toggle('on');
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  });
+  var flipAll = document.getElementById('flipAll');
+  flipAll.addEventListener('click', function(){
+    var visible = flips.filter(function(b){ return !b.closest('.item').hidden; });
+    var anyBack = visible.some(function(b){ return !b.classList.contains('on'); });
+    visible.forEach(function(b){ b.classList.toggle('on', anyBack); b.setAttribute('aria-pressed', anyBack ? 'true' : 'false'); });
+    flipAll.textContent = anyBack ? 'Показать рубашки' : 'Перевернуть все';
+  });
+
+  // фильтр колод
+  var chips = document.querySelectorAll('[data-filter]');
+  var items = document.querySelectorAll('.deck-grid .item');
+  chips.forEach(function(c){
+    c.addEventListener('click', function(){
+      var f = c.getAttribute('data-filter');
+      chips.forEach(function(x){ x.setAttribute('aria-pressed', x === c ? 'true' : 'false'); });
+      items.forEach(function(it){ it.hidden = !(f === 'all' || it.getAttribute('data-deck') === f); });
+    });
+  });
+
+  // увеличение изображений
+  var lb = document.getElementById('lb');
+  var lbImg = lb.querySelector('img');
+  var lbCap = lb.querySelector('p');
+  document.addEventListener('click', function(e){
+    var t = e.target.closest('[data-zoom]');
+    if (!t) return;
+    lbImg.src = t.getAttribute('data-zoom');
+    lbImg.alt = t.getAttribute('data-cap') || '';
+    lbCap.textContent = t.getAttribute('data-cap') || '';
+    if (lb.showModal) lb.showModal(); else window.open(lbImg.src, '_blank');
+  });
+  lb.querySelector('.x').addEventListener('click', function(){ lb.close(); });
+  lb.addEventListener('click', function(e){ if (e.target === lb) lb.close(); });
+})();
+</script>
+</body>
+</html>
