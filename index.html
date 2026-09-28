@@ -110,7 +110,7 @@ section + section{border-top:1px solid var(--line)}
 .legend{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin:14px 0 0;padding:0;list-style:none;font-size:14px;color:var(--muted)}
 .legend li{display:flex;align-items:center;gap:8px}
 .legend i{width:22px;height:3px;display:block}
-.cap-live{text-align:center;min-height:3.2em;margin:14px auto 0;max-width:34ch;font-weight:600;font-size:15.5px}
+.about .cap-live{text-align:center;min-height:3.2em;margin:14px auto 0;max-width:34ch;font-weight:600;font-size:15.5px}
 @media (max-width:900px){.about{grid-template-columns:1fr;gap:36px}}
 
 /* раунд */
@@ -140,8 +140,8 @@ section + section{border-top:1px solid var(--line)}
 @media (max-width:860px){.court{grid-template-columns:1fr}}
 
 /* колоды веером */
-.hint{color:var(--muted);margin:-18px 0 36px;font-size:15px}
-.decks{display:grid;grid-template-columns:1fr 1fr;gap:70px 40px}
+.hint{color:var(--muted);margin:-18px 0 70px;font-size:15px}
+.decks{display:grid;grid-template-columns:1fr 1fr;gap:96px 40px}
 @media (max-width:760px){.decks{grid-template-columns:1fr;gap:56px}}
 .deck{--w:clamp(126px,36vw,188px)}
 .fan{position:relative;height:calc(var(--w) * 1.4 * 1.24);max-width:calc(var(--w) * 2.6);margin:0 auto}
@@ -149,7 +149,11 @@ section + section{border-top:1px solid var(--line)}
 .fc:nth-child(1){transform:translateX(-58%) rotate(-11deg);z-index:1}
 .fc:nth-child(2){transform:translateY(-3%);z-index:2}
 .fc:nth-child(3){transform:translateX(58%) rotate(11deg);z-index:3}
-.fc.on{transform:translateY(-12%) scale(1.07);z-index:10}
+.deck{--s:1.45}
+@media (max-width:760px){.deck{--s:1.6}}
+.fc.on{transform-origin:50% 50%;transform:translateY(-8%) scale(var(--s));z-index:10}
+.fan.has-on .fc:not(.on){filter:brightness(.45)}
+.fc{transition:transform .5s cubic-bezier(.2,.7,.2,1),filter .3s}
 .fc-in{display:block;position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.2,1) .08s,translate .25s}
 .fc.on .fc-in{transform:rotateY(180deg)}
 @media (hover:hover){.fc:not(.on):hover .fc-in{translate:0 -10px}}
@@ -265,7 +269,7 @@ dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:14px}
       <a href="#karty">Карты</a>
       <a href="#kompanii">Компании</a>
       <a href="#komplekt">Комплект</a>
-      <a href="#materialy">Материалы</a>
+      <a href="#materialy">Правила</a>
       <a href="#pisma">Отзывы</a>
     </nav>
   </div>
@@ -472,34 +476,21 @@ dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:14px}
           <img src="img/parts/bill-5.webp" alt="" loading="lazy">
           <img src="img/parts/bill-10.webp" alt="" loading="lazy">
         </div>
-        <h3>Для прототипа добавьте</h3>
-        <ul class="extras">
-          <li><b>4</b>кубика D6</li>
-          <li><b>4</b>фишки ставок разных цветов</li>
-          <li><b>12</b>фишек-трекеров, по 3 на игрока</li>
-          <li><b>32</b>жетона влияния: монеты или камешки</li>
-          <li><b>4</b>маркера стадий несостоятельности</li>
-        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- МАТЕРИАЛЫ -->
+<!-- ПРАВИЛА -->
 <section id="materialy">
   <div class="wrap">
     <div class="head">
-      <h2 class="h2">Материалы</h2><div class="rule" aria-hidden="true"><i></i></div>
-      <p>Всё, чтобы разобраться в правилах и собрать прототип самостоятельно. Файлы в формате PDF, листы A4.</p>
+      <h2 class="h2">Правила игры</h2><div class="rule" aria-hidden="true"><i></i></div>
+      <p>Полный свод правил: подготовка к партии, треки развития, юристы, судебный процесс и подсчёт победных очков.</p>
     </div>
     <ul class="files">
-      <li class="main"><div><h3>Свод правил</h3><p>9 страниц, 58 КБ</p></div><a class="dl" href="files/pravila.pdf" download>Скачать</a></li>
-      <li><div><h3>Карты, лицевая сторона</h3><p>24 листа, 2 МБ</p></div><a class="dl" href="files/karty-licevaya.pdf" download>Скачать</a></li>
-      <li><div><h3>Карты, рубашки</h3><p>24 листа, 2 МБ</p></div><a class="dl" href="files/karty-rubashki.pdf" download>Скачать</a></li>
-      <li><div><h3>Планшет игрока</h3><p>1 лист, альбомная ориентация, 0,6 МБ</p></div><a class="dl" href="files/planshet.pdf" download>Скачать</a></li>
-      <li><div><h3>Игровые деньги</h3><p>12 листов, 0,3 МБ</p></div><a class="dl" href="files/kupyury.pdf" download>Скачать</a></li>
+      <li class="main"><div><h3>Свод правил</h3><p>PDF, 9 страниц, 58 КБ</p></div><a class="dl" href="files/pravila.pdf" download>Скачать</a></li>
     </ul>
-    <p class="print-tip">Карты печатайте двусторонне: лист N лицевых сторон на лист N рубашек. Можно напечатать только лица и использовать непрозрачные протекторы. Планшет лучше печатать на плотной бумаге, по одному на игрока.</p>
   </div>
 </section>
 
@@ -595,6 +586,7 @@ dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:14px}
         var wasOn = c.classList.contains('on');
         cards.forEach(function(x){ x.classList.remove('on'); x.setAttribute('aria-pressed','false'); });
         if (!wasOn){ c.classList.add('on'); c.setAttribute('aria-pressed','true'); }
+        fan.classList.toggle('has-on', !wasOn);
       });
     });
   });
