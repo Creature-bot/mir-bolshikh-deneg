@@ -174,20 +174,21 @@ section + section{border-top:1px solid var(--line)}
 .tracks h3{font:italic 800 16px/1.2 var(--font);text-transform:uppercase;margin:0 0 8px;color:var(--gold)}
 .tracks p{margin:0;font-size:15px;color:var(--muted);line-height:1.5}
 @media (max-width:760px){.tracks{grid-template-columns:1fr}.tracks div,.tracks div+div{padding:16px 0;border-left:0;border-bottom:1px solid var(--line)}}
-.companies{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.companies{display:grid;grid-template-columns:1fr 1fr;gap:28px}
 .companies button{padding:0;border:0;background:none;cursor:zoom-in}
 .companies img{width:100%;border-radius:12px;box-shadow:0 16px 34px rgba(0,0,0,.7);transition:transform .3s}
 @media (hover:hover){.companies button:hover img{transform:translateY(-6px)}}
 @media (max-width:760px){
   .companies{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:16px;margin:0 -22px;padding:4px 22px 18px;scrollbar-width:none}
   .companies::-webkit-scrollbar{display:none}
-  .companies button{flex:0 0 78vw;scroll-snap-align:center}
+  .companies button,.companies .more{flex:0 0 86vw;scroll-snap-align:center}
 }
-.closed{display:flex;align-items:center;gap:34px;margin-top:56px;flex-wrap:wrap}
-.pile{position:relative;width:220px;height:200px;flex:none}
-.pile img{position:absolute;top:0;width:150px;border-radius:9px;box-shadow:0 10px 22px rgba(0,0,0,.7)}
-.closed h3{font:italic 900 24px/1.15 var(--font);text-transform:uppercase;margin:0}
-.closed p{margin:8px 0 0;color:var(--muted);max-width:44ch}
+.more{position:relative;display:flex;flex-direction:column;justify-content:flex-end;aspect-ratio:1006/614;border:1px dashed var(--gold-soft);border-radius:12px;padding:20px 22px;overflow:hidden;background:var(--ink)}
+.more .stack{position:absolute;top:10%;right:-3%;width:50%}
+.more .stack img{position:absolute;top:0;left:0;width:100%;border-radius:10px;box-shadow:0 10px 22px rgba(0,0,0,.7)}
+.more h3{position:relative;font:italic 900 clamp(17px,2vw,23px)/1.15 var(--font);text-transform:uppercase;margin:0;max-width:46%}
+.more p{position:relative;margin:8px 0 0;color:var(--muted);max-width:46%;font-size:14.5px}
+@media (max-width:760px){.more{padding:14px 16px}.more .stack{width:46%;top:8%}.more h3{max-width:52%;font-size:16px}.more p{font-size:12.5px;max-width:52%}}
 
 /* комплект */
 .board-wrap{position:relative}
@@ -226,6 +227,8 @@ section + section{border-top:1px solid var(--line)}
 .files h3{font:italic 800 17px/1.25 var(--font);text-transform:uppercase;margin:0}
 .files p{margin:3px 0 0;font-size:14.5px;color:var(--muted)}
 .files .main h3{font-size:21px;color:var(--gold)}
+.dls{display:flex;gap:8px;flex-wrap:wrap}
+@media (max-width:560px){.files li{grid-template-columns:1fr}}
 .dl{font:italic 800 13px/1 var(--font);text-transform:uppercase;text-decoration:none;border:1px solid var(--gold);padding:12px 16px;white-space:nowrap}
 .dl:hover{background:rgba(199,154,79,.12)}
 .print-tip{margin-top:26px;font-size:15px;color:var(--muted);max-width:72ch}
@@ -269,7 +272,7 @@ dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:14px}
       <a href="#karty">Карты</a>
       <a href="#kompanii">Компании</a>
       <a href="#komplekt">Комплект</a>
-      <a href="#materialy">Правила</a>
+      <a href="#materialy">Материалы</a>
       <a href="#pisma">Отзывы</a>
       <a href="igra.html" style="color:var(--gold)">Сыграть</a>
     </nav>
@@ -431,15 +434,15 @@ dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:14px}
       <button type="button" data-zoom="img/companies/neftegaz.webp" data-cap="ПАО «НефтеГазДобыча»"><img src="img/companies/neftegaz.webp" alt="ПАО «НефтеГазДобыча»" loading="lazy"></button>
       <button type="button" data-zoom="img/companies/innovacii-it.webp" data-cap="ООО «Инновации ИТ»"><img src="img/companies/innovacii-it.webp" alt="ООО «Инновации ИТ»" loading="lazy"></button>
       <button type="button" data-zoom="img/companies/ilinka.webp" data-cap="ЮБ «Ильинка и Партнёры»"><img src="img/companies/ilinka.webp" alt="ЮБ «Ильинка и Партнёры»" loading="lazy"></button>
-    </div>
-    <div class="closed">
-      <div class="pile" aria-hidden="true">
-        <img src="img/companies/back.webp" alt="" loading="lazy" style="left:0;transform:rotate(-8deg)">
-        <img src="img/companies/back.webp" alt="" loading="lazy" style="left:16px;transform:rotate(-3deg)">
-        <img src="img/companies/back.webp" alt="" loading="lazy" style="left:32px;transform:rotate(1deg)">
-        <img src="img/companies/back.webp" alt="" loading="lazy" style="left:48px;transform:rotate(5deg)">
+      <div class="more">
+        <div class="stack" aria-hidden="true">
+          <img src="img/companies/back.webp" alt="" loading="lazy" style="transform:rotate(-9deg) translate(-10%,6%)">
+          <img src="img/companies/back.webp" alt="" loading="lazy" style="transform:rotate(-3deg) translate(-4%,2%)">
+          <img src="img/companies/back.webp" alt="" loading="lazy" style="transform:rotate(4deg)">
+        </div>
+        <h3>Ещё семь компаний — в коробке</h3>
+        <p>Банк, застройщик, агрохолдинг, медиахолдинг и другие. Их способности вы узнаете за игровым столом.</p>
       </div>
-      <div><h3>Ещё семь компаний — в коробке</h3><p>Банк, застройщик, агрохолдинг, медиахолдинг и другие. Их способности вы узнаете за игровым столом.</p></div>
     </div>
   </div>
 </section>
@@ -486,11 +489,12 @@ dialog.lb p{text-align:center;color:var(--muted);margin:10px 0 0;font-size:14px}
 <section id="materialy">
   <div class="wrap">
     <div class="head">
-      <h2 class="h2">Правила игры</h2><div class="rule" aria-hidden="true"><i></i></div>
-      <p>Полный свод правил: подготовка к партии, треки развития, юристы, судебный процесс и подсчёт победных очков.</p>
+      <h2 class="h2">Правила и методические материалы</h2><div class="rule" aria-hidden="true"><i></i></div>
+      <p>Свод правил игры и методические материалы к картам: что означает каждая карта с точки зрения арбитражного процесса и на какие статьи АПК РФ она опирается.</p>
     </div>
     <ul class="files">
-      <li class="main"><div><h3>Свод правил</h3><p>PDF, 9 страниц, 58 КБ</p></div><a class="dl" href="files/pravila.pdf" download>Скачать</a></li>
+      <li class="main"><div><h3>Свод правил</h3><p>PDF, 9 страниц, 58 КБ</p></div><div class="dls"><a class="dl" href="files/pravila.pdf" target="_blank" rel="noopener">Открыть</a><a class="dl" href="files/pravila.pdf" download>Скачать</a></div></li>
+      <li class="main"><div><h3>Методические материалы к картам</h3><p>PDF, 72 страницы, 2,6 МБ. Разбор карт по темам: иск, стороны, подсудность, ходатайства, доказательства и другие</p></div><div class="dls"><a class="dl" href="files/metodicheskie-materialy.pdf" target="_blank" rel="noopener">Открыть</a><a class="dl" href="files/metodicheskie-materialy.pdf" download>Скачать</a></div></li>
     </ul>
   </div>
 </section>
