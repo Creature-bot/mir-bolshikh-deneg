@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Сыграть заседание — Мир больших денег</title>
+<meta name="description" content="Одно судебное заседание из настольной игры «Мир больших денег» против компьютера, с тестом до и после игры.">
+<meta name="theme-color" content="#050505">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='%23050505'/><text x='32' y='47' font-size='40' text-anchor='middle' fill='%23c79a4f' font-family='Arial' font-weight='900' font-style='italic'>Ъ</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#050505; --ink:#0d0c0a; --panel:#12100d; --line:#2b261e;
+  --gold:#c79a4f; --gold-soft:#8e6f3c; --gold-hi:#e2bd72;
+  --text:#f1ece2; --muted:#a8a092; --red:#cf453d; --green:#48a869;
+  --font:"Montserrat","Arial",sans-serif;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--black);color:var(--text);font:400 16px/1.55 var(--font);-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%;display:block}
+a{color:var(--gold)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold-hi);outline-offset:3px}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+
+.top{position:sticky;top:0;z-index:20;background:rgba(5,5,5,.94);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:56px;gap:16px}
+.brand{font:italic 900 17px/1 var(--font);text-transform:uppercase;color:var(--text);text-decoration:none;white-space:nowrap}
+.brand b{color:var(--gold)}
+.back{font:600 14px var(--font);color:#d6cfc2;text-decoration:none;white-space:nowrap}
+.back:hover{color:var(--gold-hi)}
+
+.steps{display:flex;gap:6px;list-style:none;margin:22px 0 0;padding:0}
+.steps li{flex:1;height:4px;background:var(--line)}
+.steps li.done{background:var(--gold-soft)}
+.steps li.now{background:var(--gold)}
+.steps-label{font:600 12px var(--font);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 0}
+
+h1,.h1{font:italic 900 clamp(28px,5.4vw,46px)/1.02 var(--font);text-transform:uppercase;margin:26px 0 0}
+h2{font:italic 900 22px/1.15 var(--font);text-transform:uppercase;margin:0 0 12px}
+.rule{display:flex;align-items:center;gap:10px;margin:16px 0 0;width:min(280px,70%)}
+.rule::before,.rule::after{content:"";height:1px;background:var(--gold);flex:1}
+.rule i{width:8px;height:8px;background:var(--gold);transform:rotate(45deg)}
+.lead{font-size:17px;margin:18px 0 0;max-width:62ch}
+.muted{color:var(--muted)}
+.screen{padding-bottom:70px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;font:italic 800 14px/1 var(--font);text-transform:uppercase;letter-spacing:.02em;text-decoration:none;padding:15px 22px;border:1px solid var(--gold);cursor:pointer;background:transparent;color:var(--gold);min-height:48px}
+.btn:hover{background:rgba(199,154,79,.12);color:var(--gold-hi)}
+.btn-fill{background:var(--gold);color:#140e05}
+.btn-fill:hover{background:var(--gold-hi);color:#140e05}
+.btn[disabled]{opacity:.35;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+
+/* интро */
+.plan{list-style:none;margin:28px 0 0;padding:0;border-top:1px solid var(--gold)}
+.plan li{display:grid;grid-template-columns:44px 1fr;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
+.plan b{font:italic 900 26px/1 var(--font);color:var(--gold)}
+.plan strong{display:block;font:italic 800 15px var(--font);text-transform:uppercase}
+.plan span{color:var(--muted);font-size:15px}
+
+/* тест */
+.q{border-top:1px solid var(--line);padding:22px 0 6px}
+.q:first-of-type{border-top:1px solid var(--gold);margin-top:26px}
+.q h3{font:700 17px/1.4 var(--font);margin:0 0 12px}
+.q h3 em{font-style:normal;color:var(--gold);margin-right:6px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);margin:0 0 8px;cursor:pointer;background:var(--ink)}
+.opt:hover{border-color:var(--gold-soft)}
+.opt input{margin:4px 0 0;accent-color:var(--gold);flex:none;width:18px;height:18px}
+.opt.sel{border-color:var(--gold);background:rgba(199,154,79,.08)}
+
+/* выбор стороны */
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.side{border:1px solid var(--line);background:var(--ink);padding:18px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:12px}
+.side:hover{border-color:var(--gold)}
+.side img{width:min(150px,60%);margin:0 auto;border-radius:8px;box-shadow:0 10px 24px rgba(0,0,0,.6)}
+.side strong{font:italic 900 20px var(--font);text-transform:uppercase}
+.side.ist strong{color:#ef7a70}.side.otv strong{color:#7fd39b}
+.side span{color:var(--muted);font-size:14.5px}
+@media (max-width:560px){.sides{grid-template-columns:1fr}.side{flex-direction:row;align-items:center}.side img{width:90px;margin:0}}
+
+/* стол */
+.table{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.party{border:1px solid var(--line);background:var(--ink);padding:14px}
+.party.me{border-color:var(--gold-soft)}
+.party h3{display:flex;align-items:center;justify-content:space-between;gap:8px;font:italic 900 15px var(--font);text-transform:uppercase;margin:0 0 10px}
+.tag{font:700 11px var(--font);padding:4px 8px;text-transform:uppercase;letter-spacing:.04em;font-style:normal}
+.tag.ist{background:rgba(207,69,61,.18);color:#ef7a70}.tag.otv{background:rgba(72,168,105,.18);color:#7fd39b}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:12.5px;color:var(--muted)}
+.stats b{display:block;font:italic 900 18px var(--font);color:var(--text)}
+.laid{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;min-height:20px}
+.mini{font:600 11.5px/1.25 var(--font);padding:5px 7px;border:1px solid var(--line);background:#16130f}
+.mini.back{color:var(--muted)}
+.mini.gone{text-decoration:line-through;opacity:.45}
+.mini b{color:var(--gold)}
+.scale{grid-column:1/-1;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;border:1px solid var(--line);padding:12px 14px;background:var(--panel)}
+.scale .pw{font:italic 900 30px/1 var(--font)}
+.scale .pw small{display:block;font:600 11px var(--font);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+.scale .pl{color:#ef7a70}.scale .df{color:#7fd39b;text-align:right}
+.judge{text-align:center;font-size:12px;color:var(--muted)}
+.die{width:46px;height:46px;margin:0 auto 4px;display:grid;place-items:center;border:2px solid var(--gold);font:italic 900 22px var(--font);color:var(--text);background:var(--black);border-radius:8px}
+.die.roll{animation:shake .12s infinite}
+@keyframes shake{0%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}100%{transform:rotate(-6deg)}}
+@media (max-width:620px){.table{grid-template-columns:1fr}.party.bot{order:-1}}
+
+/* шаг */
+.stage{margin-top:18px;border:1px solid var(--gold-soft);background:var(--ink);padding:20px 18px}
+.stage h2{color:var(--gold)}
+.stage p{margin:0 0 10px}
+.life{margin-top:16px;border-left:3px solid var(--gold);background:rgba(199,154,79,.07);padding:11px 14px;font-size:14.5px}
+.life b{display:block;font:italic 800 12px var(--font);text-transform:uppercase;color:var(--gold);letter-spacing:.04em;margin-bottom:3px}
+.rolls{display:flex;gap:18px;flex-wrap:wrap;margin:6px 0 10px}
+.rolls .r{display:flex;align-items:center;gap:10px}
+.rolls .die{margin:0}
+.ok{color:#7fd39b;font-weight:700}.bad{color:#ef7a70;font-weight:700}
+
+/* карты в руке */
+.hand{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:14px 0 4px}
+.gc{position:relative;text-align:left;border:1px solid var(--line);background:linear-gradient(180deg,#1a0c0b,#0d0c0a 60%);padding:10px 10px 12px;cursor:pointer;min-height:150px;display:flex;flex-direction:column}
+.gc.otv{background:linear-gradient(180deg,#0b1a10,#0d0c0a 60%)}
+.gc .tp{display:flex;justify-content:space-between;font:italic 900 18px/1 var(--font)}
+.gc .tp small{display:block;font:600 9.5px var(--font);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.gc .nm{font:italic 800 13.5px/1.25 var(--font);margin:12px 0 6px}
+.gc .fx{font-size:12px;line-height:1.4;color:var(--muted)}
+.gc .vul{margin-top:auto;padding-top:8px;font:700 10.5px var(--font);color:#ef9a5a;text-transform:uppercase;letter-spacing:.04em}
+.gc.sel{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.gc.sel::after{content:"✓";position:absolute;top:-9px;right:-9px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#140e05;display:grid;place-items:center;font:900 13px var(--font)}
+.gc.off{opacity:.38;cursor:not-allowed}
+.gc.keep{cursor:default;border-style:dashed}
+.budget{font-size:14px;color:var(--muted);margin-top:8px}
+.budget b{color:var(--text)}
+
+/* итоги */
+.verdict{font:italic 900 clamp(24px,4.6vw,36px)/1.1 var(--font);text-transform:uppercase;margin:4px 0 10px}
+.pay{list-style:none;margin:8px 0 0;padding:0;font-size:15px}
+.pay li{padding:7px 0;border-bottom:1px solid var(--line)}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:24px}
+.score div{border:1px solid var(--line);background:var(--ink);padding:16px}
+.score b{display:block;font:italic 900 40px/1 var(--font);color:var(--gold)}
+.score span{font:600 12px var(--font);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.ans{border-top:1px solid var(--line);padding:16px 0}
+.ans h3{font:700 15.5px/1.4 var(--font);margin:0 0 6px}
+.ans .c{color:#7fd39b;font-weight:600;font-size:14.5px}
+.ans .w{color:#ef7a70;font-size:14.5px}
+.ans p{margin:6px 0 0;color:var(--muted);font-size:14.5px}
+.bars{margin-top:16px}
+.bar{display:grid;grid-template-columns:80px 1fr 50px;align-items:center;gap:10px;margin:10px 0}
+.bar span{font:600 13px var(--font);color:var(--muted);text-transform:uppercase}
+.bar i{display:block;height:22px;background:var(--line);position:relative}
+.bar i em{position:absolute;inset:0 auto 0 0;background:var(--gold-soft);transition:width .8s}
+.bar.after i em{background:var(--gold)}
+.bar b{font:italic 900 18px var(--font);text-align:right}
+.note{font-size:13.5px;color:var(--muted);margin-top:10px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="index.html">Мир <b>больших денег</b></a>
+    <a class="back" href="index.html">На главную</a>
+  </div>
+</header>
+<main class="wrap" id="app" aria-live="polite"></main>
+
+<script>
+/* ==========================================================
+   НАСТРОЙКА СБОРА РЕЗУЛЬТАТОВ (Google Форма + Таблица)
+   Пока поля пустые, общий результат не показывается,
+   а игра и тесты работают как обычно.
+   ========================================================== */
+var CONFIG = {
+  formAction: '',            // https://docs.google.com/forms/d/e/…/formResponse
+  fields: { before: '', after: '', side: '', result: '' },   // entry.123456789 и т.д.
+  csvUrl: ''                 // https://docs.google.com/spreadsheets/d/e/…/pub?output=csv
+};
+
+/* ===================== ВОПРОСЫ ТЕСТА ===================== */
+var QUESTIONS = [
+  { q: 'Кто уплачивает госпошлину при подаче иска в арбитражный суд?',
+    options: ['Истец', 'Ответчик', 'Суд за счёт бюджета', 'Никто, обращение бесплатное'], correct: 0,
+    explain: 'Госпошлину платит истец при подаче иска. Если он выиграет, эти расходы ему возместит ответчик.' },
+  { q: 'Суд полностью удовлетворил иск. Кто в итоге несёт судебные расходы истца?',
+    options: ['Ответчик, как проигравшая сторона', 'Истец', 'Стороны пополам', 'Государство'], correct: 0,
+    explain: 'Судебные расходы возмещает проигравшая сторона (ст. 110 АПК РФ). Расходы на представителей — в разумных пределах.' },
+  { q: 'Что такое мировое соглашение?',
+    options: ['Договорённость сторон об урегулировании спора, которую утверждает суд', 'Отказ истца от иска', 'Решение суда в пользу обеих сторон', 'Перенос заседания по просьбе сторон'], correct: 0,
+    explain: 'Стороны сами договариваются, как закончить спор, а суд утверждает соглашение. После этого производство по делу прекращается.' },
+  { q: 'Какое доказательство суд не примет?',
+    options: ['Полученное с нарушением закона', 'Письменный договор', 'Заключение эксперта', 'Показания свидетеля'], correct: 0,
+    explain: 'Доказательства, полученные с нарушением федерального закона, недопустимы (ст. 68 АПК РФ). Фальсификация доказательств — преступление.' },
+  { q: 'Как обжаловать решение суда первой инстанции, которое ещё не вступило в силу?',
+    options: ['Подать апелляционную жалобу', 'Подать кассационную жалобу', 'Обратиться в Конституционный суд', 'Написать в прокуратуру'], correct: 0,
+    explain: 'Не вступившее в силу решение обжалуют в апелляционном порядке. Срок — месяц со дня принятия решения (ст. 259 АПК РФ).' }
+];
+
+/* ===================== КАРТЫ (упрощённые) ===================== */
+var POOL = {
+  ist: [
+    { n: 'Письменное доказательство', p: 3, c: 1 },
+    { n: 'Вещественное доказательство', p: 2, c: 1 },
+    { n: 'Заключение эксперта', p: 3, c: 2 },
+    { n: 'Свидетель', p: 1, c: 0 },
+    { n: 'Объяснение истца', p: 2, c: 0 },
+    { n: 'Ходатайство', p: 2, c: 1 },
+    { n: 'Липовый документ', p: 4, c: 1, v: 1 },
+    { n: 'Купленный эксперт', p: 6, c: 3, v: 1 },
+    { n: 'Видеозапись с монтажом', p: 8, c: 3, v: 1 },
+    { n: 'Ложь во благо', p: 4, c: 0, v: 1 }
+  ],
+  otv: [
+    { n: 'Отзыв на иск', p: 3, c: 0 },
+    { n: 'Возражения относительно требований', p: 2, c: 0 },
+    { n: 'Письменное доказательство', p: 3, c: 1 },
+    { n: 'Заключение эксперта', p: 3, c: 2 },
+    { n: 'Свидетель защиты', p: 1, c: 0 },
+    { n: 'Ходатайство', p: 2, c: 1 },
+    { n: 'Встречный иск', p: 1, c: 1, t: 'counter', fx: 'При победе ответчика он дополнительно получает половину цены иска.' },
+    { n: 'Липовый документ', p: 4, c: 1, v: 1 },
+    { n: 'Купленный эксперт', p: 6, c: 3, v: 1 },
+    { n: 'Ложь во благо', p: 4, c: 0, v: 1 }
+  ]
+};
+var SPECIAL = {
+  mir:    { n: 'Мировое соглашение', p: 0, c: 0, t: 'mir', fx: 'Выложите на стол. При вскрытии бросок кубика: 5–6 — стороны мирятся, никто никому не платит.' },
+  react:  { n: 'Недопустимое доказательство', p: 0, c: 1, t: 'react', fx: 'Остаётся в руке. После вскрытия сбрасывает одну уязвимую карту соперника.' },
+  appeal: { n: 'Апелляционная жалоба', p: 0, c: 1, t: 'appeal', fx: 'Остаётся в руке. Если вы проиграли — бросок: 3–6, решение отменяется.' }
+};
+var LAWYERS = [
+  { n: 'Помощник юриста', b: 1, need: 6, rank: 1 },
+  { n: 'Младший юрист', b: 2, need: 5, rank: 2 },
+  { n: 'Юрист', b: 3, need: 4, rank: 3 }
+];
+
+/* ===================== ВСПОМОГАТЕЛЬНОЕ ===================== */
+var app = document.getElementById('app');
+function el(html){ var d = document.createElement('div'); d.innerHTML = html; return d; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function d6(){ return 1 + Math.floor(Math.random() * 6); }
+function shuffle(a){ a = a.slice(); for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function pick(a){ return a[Math.floor(Math.random() * a.length)]; }
+function mln(x){ return x + ' млн'; }
+function toTop(){ window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+var S = {}; // общее состояние
+var STAGES = ['Тест', 'Сторона', 'Заседание', 'Тест', 'Итоги'];
+function progress(i){
+  var h = '<ul class="steps">';
+  for (var k = 0; k < STAGES.length; k++) h += '<li class="' + (k < i ? 'done' : k === i ? 'now' : '') + '"></li>';
+  return h + '</ul><p class="steps-label">Шаг ' + (i + 1) + ' из 5 · ' + STAGES[i] + '</p>';
+}
+
+/* ===================== ЭКРАН: ВСТУПЛЕНИЕ ===================== */
+function intro(){
+  S = { before: null, after: null };
+  app.innerHTML =
+    '<div class="screen">' +
+    '<h1>Сыграйте<br>одно заседание</h1><div class="rule"><i></i></div>' +
+    '<p class="lead">Короткая версия настольной игры: одно судебное дело против компьютера. Займёт около пяти минут.</p>' +
+    '<ol class="plan">' +
+      '<li><b>1</b><div><strong>Тест</strong><span>Пять вопросов об арбитражном процессе. Ответьте, как знаете.</span></div></li>' +
+      '<li><b>2</b><div><strong>Выбор стороны</strong><span>Подайте иск или защищайтесь от него.</span></div></li>' +
+      '<li><b>3</b><div><strong>Заседание</strong><span>Карты, юристы, кубики и решение суда. На каждом шаге — как это устроено в жизни.</span></div></li>' +
+      '<li><b>4</b><div><strong>Тот же тест ещё раз</strong><span>Посмотрим, что изменилось.</span></div></li>' +
+      '<li><b>5</b><div><strong>Итоги</strong><span>Ваш результат, правильные ответы и общая статистика всех игроков.</span></div></li>' +
+    '</ol>' +
+    '<div class="row"><button class="btn btn-fill" id="go">Начать</button></div></div>';
+  document.getElementById('go').onclick = function(){ quiz(0); };
+}
+
+/* ===================== ЭКРАН: ТЕСТ ===================== */
+function quiz(which){ // 0 — до игры, 1 — после
+  var stage = which === 0 ? 0 : 3;
+  var orders = QUESTIONS.map(function(q){ return shuffle(q.options.map(function(_, i){ return i; })); });
+  var answers = QUESTIONS.map(function(){ return null; });
+  var h = '<div class="screen">' + progress(stage) +
+    '<h1>' + (which === 0 ? 'Тест до игры' : 'Тест после игры') + '</h1><div class="rule"><i></i></div>' +
+    '<p class="lead">' + (which === 0 ? 'Пять вопросов. Если не знаете ответ, выберите наиболее вероятный.' : 'Те же пять вопросов. Ответьте ещё раз с учётом того, что увидели в заседании.') + '</p>';
+  QUESTIONS.forEach(function(q, qi){
+    h += '<div class="q"><h3><em>' + (qi + 1) + '.</em>' + esc(q.q) + '</h3>';
+    orders[qi].forEach(function(oi){
+      h += '<label class="opt"><input type="radio" name="q' + qi + '" value="' + oi + '"><span>' + esc(q.options[oi]) + '</span></label>';
+    });
+    h += '</div>';
+  });
+  h += '<div class="row"><button class="btn btn-fill" id="next" disabled>' + (which === 0 ? 'К заседанию' : 'Узнать результат') + '</button></div></div>';
+  app.innerHTML = h; toTop();
+  var next = document.getElementById('next');
+  app.querySelectorAll('input[type=radio]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var qi = +inp.name.slice(1);
+      answers[qi] = +inp.value;
+      app.querySelectorAll('input[name=q' + qi + ']').forEach(function(x){ x.parentNode.classList.toggle('sel', x.checked); });
+      next.disabled = answers.some(function(a){ return a === null; });
+    });
+  });
+  next.onclick = function(){
+    var score = answers.reduce(function(s, a, i){ return s + (a === QUESTIONS[i].correct ? 1 : 0); }, 0);
+    if (which === 0){ S.before = score; S.answersBefore = answers; chooseSide(); }
+    else { S.after = score; S.answersAfter = answers; results(); }
+  };
+}
+
+/* ===================== ЭКРАН: ВЫБОР СТОРОНЫ ===================== */
+function chooseSide(){
+  app.innerHTML = '<div class="screen">' + progress(1) +
+    '<h1>Выберите сторону</h1><div class="rule"><i></i></div>' +
+    '<p class="lead">Компьютер займёт противоположную.</p>' +
+    '<div class="sides">' +
+      '<button class="side ist" data-s="ist"><img src="img/cards/back-istec.webp" alt=""><div><strong>Истец</strong><br><span>Вы подаёте иск и пытаетесь взыскать деньги с ответчика.</span></div></button>' +
+      '<button class="side otv" data-s="otv"><img src="img/cards/back-otvetchik.webp" alt=""><div><strong>Ответчик</strong><br><span>Против вас подали иск. Ваша задача — отбиться.</span></div></button>' +
+    '</div></div>';
+  toTop();
+  app.querySelectorAll('.side').forEach(function(b){ b.onclick = function(){ startCase(b.getAttribute('data-s')); }; });
+}
+
+/* ===================== ЗАСЕДАНИЕ ===================== */
+var G; // состояние дела
+function dealHand(side){
+  var pool = shuffle(POOL[side]);
+  var normal = pool.filter(function(c){ return !c.v; });
+  var vuln = pool.filter(function(c){ return c.v; });
+  var cards = normal.slice(0, 3).concat(vuln.slice(0, 1));
+  cards = cards.concat([SPECIAL.mir, SPECIAL.react, SPECIAL.appeal]);
+  return cards.map(function(c, i){ var o = {}; for (var k in c) o[k] = c[k]; o.id = side + i; o.t = o.t || 'power'; return o; });
+}
+function newParty(side){
+  return { side: side, money: 10, lawyer: pick(LAWYERS), token: 1, hand: dealHand(side), laid: [], spent: 0, lawRoll: null, lawOk: false };
+}
+function startCase(side){
+  var other = side === 'ist' ? 'otv' : 'ist';
+  G = { me: newParty(side), bot: newParty(other), claim: 0, duty: 0, judge: null, judgeShift: 0, step: 'claim', log: [] };
+  G.pl = side === 'ist' ? G.me : G.bot;  // истец
+  G.df = side === 'ist' ? G.bot : G.me;  // ответчик
+  stepClaim();
+}
+function sideName(p){ return p.side === 'ist' ? 'Истец' : 'Ответчик'; }
+function judgeBonus(){ var j = G.judge === null ? null : Math.max(1, Math.min(6, G.judge + G.judgeShift)); return j; }
+function strength(p){
+  var s = p === G.df ? 1 : 0;
+  p.laid.forEach(function(c){ if (!c.gone) s += c.p; });
+  if (p.lawOk) s += p.lawyer.b;
+  var j = judgeBonus();
+  if (j !== null){ if (p === G.pl && j <= 2) s += 1; if (p === G.df && j >= 5) s += 1; }
+  return s;
+}
+function laidHtml(p, open){
+  if (!p.laid.length) return '<span class="muted" style="font-size:12.5px">Карт на столе нет</span>';
+  return p.laid.map(function(c){
+    if (!open) return '<span class="mini back">рубашкой вверх</span>';
+    return '<span class="mini' + (c.gone ? ' gone' : '') + '">' + esc(c.n) + (c.p ? ' <b>+' + c.p + '</b>' : '') + '</span>';
+  }).join('');
+}
+function board(revealed){
+  var j = judgeBonus();
+  var jt = j === null ? '?' : j;
+  var jtxt = j === null ? 'кубик судьи' : (j <= 2 ? 'судья на стороне истца' : j >= 5 ? 'судья на стороне ответчика' : 'судья нейтрален');
+  function party(p, me){
+    return '<div class="party ' + (me ? 'me' : 'bot') + '"><h3>' + (me ? 'Вы' : 'Компьютер') + ' <span class="tag ' + p.side + '">' + sideName(p) + '</span></h3>' +
+      '<div class="stats"><div><b>' + mln(p.money) + '</b>деньги</div><div><b>+' + p.lawyer.b + '</b>' + esc(p.lawyer.n) + '</div><div><b>' + p.token + '</b>жетон влияния</div></div>' +
+      '<div class="laid">' + laidHtml(p, me || revealed) + '</div></div>';
+  }
+  var showPw = revealed;
+  return '<div class="table">' + party(G.bot, false) + party(G.me, true) +
+    '<div class="scale"><div class="pw pl">' + (showPw ? strength(G.pl) : '?') + '<small>сила иска</small></div>' +
+    '<div class="judge"><div class="die" id="jdie">' + jt + '</div>' + jtxt + '</div>' +
+    '<div class="pw df">' + (showPw ? strength(G.df) : '?') + '<small>сила защиты</small></div></div></div>';
+}
+function render(stageHtml, revealed){
+  app.innerHTML = '<div class="screen">' + progress(2) +
+    '<h1 style="font-size:clamp(24px,4.4vw,34px)">Дело ' + (G.claim ? 'на ' + mln(G.claim) : '') + '</h1>' +
+    board(revealed) + '<div class="stage">' + stageHtml + '</div></div>';
+}
+function life(t){ return '<div class="life"><b>Как в жизни</b>' + t + '</div>'; }
+function rollAnim(id, value, cb){
+  var d = document.getElementById(id); if (!d){ cb(); return; }
+  d.classList.add('roll'); var n = 0;
+  var t = setInterval(function(){ d.textContent = d6(); if (++n > 9){ clearInterval(t); d.classList.remove('roll'); d.textContent = value; cb(); } }, 70);
+}
+
+/* шаг 1: подача иска */
+function stepClaim(){
+  if (G.me === G.pl){
+    var can6 = G.me.lawyer.rank >= 3;
+    render('<h2>Подача иска</h2><p>Выберите сумму иска. Чем она больше, тем выше госпошлина, которую вы платите сразу.</p>' +
+      '<div class="row"><button class="btn btn-fill" data-c="3">Иск на 3 млн · пошлина 1 млн</button>' +
+      '<button class="btn" data-c="6"' + (can6 ? '' : ' disabled') + '>Иск на 6 млн · пошлина 2 млн</button></div>' +
+      (can6 ? '' : '<p class="note">Иск на 6 млн можно подать, только если в штате есть юрист ранга «Юрист».</p>') +
+      life('Госпошлину платит истец при подаче иска, её размер зависит от суммы требований. Если истец выиграет, пошлину ему возместит ответчик.'), false);
+    app.querySelectorAll('[data-c]').forEach(function(b){ b.onclick = function(){ fileClaim(+b.getAttribute('data-c')); }; });
+  } else {
+    var c = G.bot.lawyer.rank >= 3 ? 6 : 3;
+    fileClaim(c, true);
+  }
+}
+function fileClaim(c, byBot){
+  G.claim = c; G.duty = c === 6 ? 2 : 1; G.pl.money -= G.duty;
+  render('<h2>Иск подан</h2><p>' + (byBot ? 'Компьютер подал против вас иск на ' + mln(c) + ' и заплатил госпошлину ' + mln(G.duty) + '.' : 'Вы подали иск на ' + mln(c) + ' и заплатили госпошлину ' + mln(G.duty) + '.') + '</p>' +
+    '<p>Теперь кубик определит настроение судьи. Это происходит до того, как стороны выложат карты.</p>' +
+    '<div class="row"><button class="btn btn-fill" id="go">Бросить кубик судьи</button></div>' +
+    (byBot ? life('Ответчик получает копию иска и может заранее подготовить отзыв: письменные возражения с доказательствами.') : life('Перед подачей иска в большинстве споров между компаниями нужно сначала направить ответчику претензию и подождать ответа.')), false);
+  document.getElementById('go').onclick = stepJudge;
+}
+
+/* шаг 2: судья */
+function stepJudge(){
+  var v = d6();
+  rollAnim('jdie', v, function(){
+    G.judge = v;
+    var mine = G.me === G.pl ? 'истец' : 'ответчик';
+    var good = G.me === G.pl ? v <= 2 : v >= 5;
+    var canShift = G.me.token > 0 && !good && ((G.me === G.pl && v === 3) || (G.me === G.df && v === 4));
+    render('<h2>Настроение судьи: ' + v + '</h2><p>' + (v <= 2 ? 'Судья благосклонен к истцу: +1 к силе иска.' : v >= 5 ? 'Судья благосклонен к ответчику: +1 к силе защиты.' : 'Судья нейтрален.') + '</p>' +
+      (canShift ? '<p>У вас есть жетон влияния. Он сдвигает бросок на 1 — судья станет на вашу сторону (вы ' + mine + ').</p>' : '') +
+      '<div class="row">' + (canShift ? '<button class="btn" id="tok">Потратить жетон</button>' : '') + '<button class="btn btn-fill" id="go">Дальше</button></div>' +
+      life('В реальности настроение судьи значения не имеет: судья обязан быть беспристрастным. Если в этом есть сомнения, сторона может заявить судье отвод.'), false);
+    document.getElementById('go').onclick = stepLay;
+    var tk = document.getElementById('tok');
+    if (tk) tk.onclick = function(){ G.me.token = 0; G.judgeShift = G.me === G.pl ? -1 : 1; stepLay(); };
+  });
+}
+
+/* шаг 3: выкладка карт */
+function stepLay(){
+  var me = G.me, sel = {};
+  function cost(){ var s = 0; me.hand.forEach(function(c){ if (sel[c.id]) s += c.c; }); return s; }
+  function draw(){
+    var h = '<h2>Выложите карты</h2><p>Выберите карты для заседания. Каждая карта стоит денег — это судебные издержки. Компьютер тоже выбирает карты, вы увидите их после вскрытия.</p><div class="hand">';
+    me.hand.forEach(function(c){
+      var keep = c.t === 'react' || c.t === 'appeal';
+      var off = !keep && !sel[c.id] && cost() + c.c > me.money;
+      h += '<button class="gc ' + me.side + (sel[c.id] ? ' sel' : '') + (keep ? ' keep' : '') + (off ? ' off' : '') + '" data-id="' + c.id + '"' + (keep || off ? ' tabindex="-1"' : '') + '>' +
+        '<span class="tp"><span>' + (c.p ? '+' + c.p : '0') + '<small>сила</small></span><span style="text-align:right">' + c.c + '<small>млн</small></span></span>' +
+        '<span class="nm">' + esc(c.n) + '</span>' + (c.fx ? '<span class="fx">' + esc(c.fx) + '</span>' : '') +
+        (c.v ? '<span class="vul">Уязвимая</span>' : '') + '</button>';
+    });
+    h += '</div><p class="budget">Издержки: <b>' + mln(cost()) + '</b> из ' + mln(me.money) + '. Карты с пунктирной рамкой остаются в руке и сработают позже.</p>' +
+      '<div class="row"><button class="btn btn-fill" id="go">Выложить и вскрыть</button></div>' +
+      life('Каждая сторона должна доказать обстоятельства, на которые ссылается, и раскрыть свои доказательства до начала заседания.');
+    render(h, false);
+    app.querySelectorAll('.gc').forEach(function(b){
+      b.onclick = function(){
+        var c = me.hand.filter(function(x){ return x.id === b.getAttribute('data-id'); })[0];
+        if (c.t === 'react' || c.t === 'appeal') return;
+        if (!sel[c.id] && cost() + c.c > me.money) return;
+        sel[c.id] = !sel[c.id]; draw();
+      };
+    });
+    document.getElementById('go').onclick = function(){
+      me.laid = me.hand.filter(function(c){ return sel[c.id]; });
+      me.hand = me.hand.filter(function(c){ return !sel[c.id]; });
+      botLay(); payCosts(); stepReveal();
+    };
+  }
+  draw();
+}
+function botLay(){
+  var b = G.bot, budget = b.money - 1; // оставить деньги на реакцию
+  var cands = b.hand.filter(function(c){ return c.t === 'power' || c.t === 'counter'; })
+    .filter(function(c){ return !c.v || Math.random() < 0.6; })
+    .sort(function(x, y){ return (y.p / (y.c + 0.5)) - (x.p / (x.c + 0.5)); });
+  var spent = 0, laid = [];
+  cands.forEach(function(c){ if (spent + c.c <= budget && laid.length < 3){ laid.push(c); spent += c.c; } });
+  var total = laid.reduce(function(s, c){ return s + c.p; }, 0);
+  if (total < 5 && Math.random() < 0.5) laid.push(b.hand.filter(function(c){ return c.t === 'mir'; })[0]);
+  b.laid = laid; b.hand = b.hand.filter(function(c){ return laid.indexOf(c) < 0; });
+}
+function payCosts(){
+  [G.me, G.bot].forEach(function(p){ var s = 0; p.laid.forEach(function(c){ s += c.c; }); p.money -= s; p.spent = s; });
+}
+
+/* шаг 4: вскрытие, реакции, мировое */
+function stepReveal(){
+  var me = G.me, bot = G.bot;
+  var botVuln = bot.laid.filter(function(c){ return c.v && !c.gone; });
+  var myReact = me.hand.filter(function(c){ return c.t === 'react'; })[0];
+  var canReact = myReact && botVuln.length && me.money >= 1;
+  var h = '<h2>Вскрытие карт</h2><p>Обе стороны открыли карты и оплатили издержки: вы — ' + mln(me.spent) + ', компьютер — ' + mln(bot.spent) + '.</p>';
+  if (canReact){
+    h += '<p>Компьютер выложил уязвимую карту. У вас в руке «Недопустимое доказательство»: за 1 млн его можно исключить из дела.</p>' +
+      '<div class="row"><button class="btn" id="react">Заявить о недопустимости</button><button class="btn btn-fill" id="go">Не заявлять</button></div>';
+  } else {
+    h += '<div class="row"><button class="btn btn-fill" id="go">Дальше</button></div>';
+  }
+  h += life('Суд не принимает доказательства, полученные с нарушением закона. А подделка доказательств — уголовное преступление.');
+  render(h, true);
+  var go = document.getElementById('go');
+  go.onclick = function(){ botReact(); };
+  var r = document.getElementById('react');
+  if (r) r.onclick = function(){
+    var t = botVuln.sort(function(a, b){ return b.p - a.p; })[0]; t.gone = true;
+    me.money -= 1; me.hand = me.hand.filter(function(c){ return c !== myReact; });
+    botReact('Вы исключили из дела карту «' + t.n + '».');
+  };
+}
+function botReact(prev){
+  var me = G.me, bot = G.bot, msgs = prev ? [prev] : [];
+  var myVuln = me.laid.filter(function(c){ return c.v && !c.gone; });
+  var bReact = bot.hand.filter(function(c){ return c.t === 'react'; })[0];
+  if (bReact && myVuln.length && bot.money >= 1){
+    var t = myVuln.sort(function(a, b){ return b.p - a.p; })[0]; t.gone = true;
+    bot.money -= 1; bot.hand = bot.hand.filter(function(c){ return c !== bReact; });
+    msgs.push('Компьютер заявил о недопустимости вашей карты «' + t.n + '» — она исключена из дела.');
+  }
+  // мировое соглашение
+  var mirOwners = [G.pl, G.df].filter(function(p){ return p.laid.some(function(c){ return c.t === 'mir'; }); });
+  if (mirOwners.length){
+    var v = d6();
+    var who = mirOwners[0] === me ? 'Вы предложили' : 'Компьютер предложил';
+    render('<h2>Мировое соглашение</h2>' + msgs.map(function(m){ return '<p>' + esc(m) + '</p>'; }).join('') +
+      '<p>' + who + ' мировое соглашение. Бросок: 5–6 — стороны мирятся.</p><div class="rolls"><div class="r"><div class="die" id="mdie">?</div></div></div><div id="after"></div>' +
+      life('Мировое соглашение утверждает суд, после этого дело прекращается. Если стороны помирились до решения суда, истцу возвращается часть госпошлины.'), true);
+    rollAnim('mdie', v, function(){
+      var a = document.getElementById('after');
+      if (v >= 5){
+        a.innerHTML = '<p class="ok">Стороны помирились. Никто никому не платит, каждый несёт свои издержки.</p><div class="row"><button class="btn btn-fill" id="go">Завершить дело</button></div>';
+        document.getElementById('go').onclick = function(){ finish('mir'); };
+      } else {
+        a.innerHTML = '<p class="bad">Договориться не удалось, процесс продолжается.</p><div class="row"><button class="btn btn-fill" id="go">К броскам за юристов</button></div>';
+        document.getElementById('go').onclick = stepLawyers;
+      }
+    });
+    return;
+  }
+  if (msgs.length){
+    render('<h2>Реакция сторон</h2>' + msgs.map(function(m){ return '<p>' + esc(m) + '</p>'; }).join('') +
+      '<div class="row"><button class="btn btn-fill" id="go">К броскам за юристов</button></div>', true);
+    document.getElementById('go').onclick = stepLawyers;
+  } else stepLawyers();
+}
+
+/* шаг 5: юристы */
+function stepLawyers(){
+  var me = G.me, bot = G.bot;
+  me.lawRoll = d6(); bot.lawRoll = d6();
+  render('<h2>Броски за юристов</h2><p>Юрист приносит бонус к силе, только если бросок успешен.</p>' +
+    '<div class="rolls"><div class="r"><div class="die" id="d1">?</div><span>Ваш ' + esc(me.lawyer.n.toLowerCase()) + ': нужно ' + me.lawyer.need + '+</span></div>' +
+    '<div class="r"><div class="die" id="d2">?</div><span>Юрист компьютера: нужно ' + bot.lawyer.need + '+</span></div></div><div id="after"></div>' +
+    life('Представлять компанию в арбитражном суде может, по общему правилу, только адвокат или юрист с высшим юридическим образованием.'), true);
+  rollAnim('d1', me.lawRoll, function(){ rollAnim('d2', bot.lawRoll, afterRolls); });
+}
+function afterRolls(){
+  var me = G.me, bot = G.bot;
+  if (bot.token && bot.lawRoll === bot.lawyer.need - 1){ bot.lawRoll++; bot.token = 0; bot.usedToken = true; }
+  me.lawOk = me.lawRoll >= me.lawyer.need; bot.lawOk = bot.lawRoll >= bot.lawyer.need;
+  var opts = '';
+  if (me.token){
+    if (!me.lawOk && me.lawRoll === me.lawyer.need - 1) opts += '<button class="btn" id="t1">Жетон: +1 к своему броску</button>';
+    if (bot.lawOk && bot.lawRoll === bot.lawyer.need) opts += '<button class="btn" id="t2">Жетон: −1 к броску соперника</button>';
+  }
+  render('<h2>Броски за юристов</h2>' +
+    '<p>Ваш бросок: <b>' + me.lawRoll + '</b> — ' + (me.lawOk ? '<span class="ok">успех, +' + me.lawyer.b + ' к силе</span>' : '<span class="bad">провал</span>') + '</p>' +
+    '<p>Бросок компьютера: <b>' + bot.lawRoll + '</b>' + (bot.usedToken ? ' (с жетоном влияния)' : '') + ' — ' + (bot.lawOk ? '<span class="ok">успех, +' + bot.lawyer.b + '</span>' : '<span class="bad">провал</span>') + '</p>' +
+    '<div class="row">' + opts + '<button class="btn btn-fill" id="go">К решению суда</button></div>' +
+    life('Представлять компанию в арбитражном суде может, по общему правилу, только адвокат или юрист с высшим юридическим образованием.'), true);
+  document.getElementById('go').onclick = stepDecision;
+  var t1 = document.getElementById('t1'), t2 = document.getElementById('t2');
+  if (t1) t1.onclick = function(){ me.token = 0; me.lawRoll++; afterRolls(); };
+  if (t2) t2.onclick = function(){ me.token = 0; bot.lawRoll--; afterRolls(); };
+}
+
+/* шаг 6: решение */
+function stepDecision(){
+  var sp = strength(G.pl), sd = strength(G.df);
+  G.verdict = sp > sd ? 'pl' : sd > sp ? 'df' : 'tie';
+  var loser = G.verdict === 'pl' ? G.df : G.verdict === 'df' ? G.pl : null;
+  var title = G.verdict === 'pl' ? 'Иск удовлетворён' : G.verdict === 'df' ? 'В иске отказано' : 'Силы равны';
+  var meWon = (G.verdict === 'pl' && G.me === G.pl) || (G.verdict === 'df' && G.me === G.df);
+  var h = '<p class="verdict">' + title + '</p><p>Сила иска ' + sp + ', сила защиты ' + sd + '. ' +
+    (G.verdict === 'tie' ? 'Дело откладывается, никто никому не платит.' : meWon ? 'Вы выиграли дело.' : 'Вы проиграли дело.') + '</p>';
+  if (loser === G.me && me_hasAppeal() && G.me.money >= 1){
+    h += '<p>У вас есть «Апелляционная жалоба». За 1 млн можно обжаловать решение: на кубике 3–6 оно отменяется.</p>' +
+      '<div class="row"><button class="btn" id="ap">Подать апелляцию</button><button class="btn btn-fill" id="go">Принять решение</button></div>';
+  } else {
+    h += '<div class="row"><button class="btn btn-fill" id="go">' + (loser === G.bot && bot_hasAppeal() && G.bot.money >= 1 ? 'Дальше' : 'Выплаты') + '</button></div>';
+  }
+  h += life('Решение первой инстанции можно обжаловать в апелляционный суд в течение месяца. Пока срок не истёк, решение не вступает в силу.');
+  render(h, true);
+  var ap = document.getElementById('ap');
+  if (ap) ap.onclick = function(){ G.me.money -= 1; appeal(G.me); };
+  document.getElementById('go').onclick = function(){
+    if (loser === G.bot && bot_hasAppeal() && G.bot.money >= 1){ G.bot.money -= 1; appeal(G.bot); }
+    else finish(G.verdict);
+  };
+}
+function me_hasAppeal(){ return G.me.hand.some(function(c){ return c.t === 'appeal'; }); }
+function bot_hasAppeal(){ return G.bot.hand.some(function(c){ return c.t === 'appeal'; }); }
+function appeal(p){
+  var v = d6();
+  render('<h2>Апелляция</h2><p>' + (p === G.me ? 'Вы подали' : 'Компьютер подал') + ' апелляционную жалобу. Бросок: 3–6 — решение отменяется.</p>' +
+    '<div class="rolls"><div class="r"><div class="die" id="adie">?</div></div></div><div id="after"></div>' +
+    life('Апелляционный суд заново проверяет дело и может оставить решение в силе, изменить его или отменить.'), true);
+  rollAnim('adie', v, function(){
+    var a = document.getElementById('after');
+    if (v >= 3){
+      a.innerHTML = '<p class="ok">Решение отменено, выплаты не производятся.</p><div class="row"><button class="btn btn-fill" id="go">Завершить дело</button></div>';
+      document.getElementById('go').onclick = function(){ finish('appeal'); };
+    } else {
+      a.innerHTML = '<p class="bad">Апелляционный суд оставил решение в силе.</p><div class="row"><button class="btn btn-fill" id="go">Выплаты</button></div>';
+      document.getElementById('go').onclick = function(){ finish(G.verdict); };
+    }
+  });
+}
+function transfer(from, to, amount){ var paid = Math.min(amount, Math.max(0, from.money)); from.money -= paid; to.money += paid; return paid; }
+function finish(kind){
+  var pays = [], meWon = false;
+  if (kind === 'pl'){
+    var due = G.claim + G.duty + Math.min(G.pl.spent, 1);
+    var paid = transfer(G.df, G.pl, due);
+    pays.push('Ответчик платит истцу ' + mln(due) + ': цена иска ' + mln(G.claim) + ', возврат госпошлины ' + mln(G.duty) + ' и издержки до 1 млн.');
+    if (paid < due) pays.push('Ответчику не хватило ' + mln(due - paid) + ' — в полной игре это шаг к банкротству.');
+    meWon = G.me === G.pl;
+  } else if (kind === 'df'){
+    var comp = Math.min(G.df.spent, 5);
+    var extra = G.df.laid.some(function(c){ return c.t === 'counter' && !c.gone; }) ? Math.ceil(G.claim / 2) : 0;
+    if (comp + extra) transfer(G.pl, G.df, comp + extra);
+    pays.push('Истец компенсирует ответчику издержки: ' + mln(comp) + '. Госпошлина истцу не возвращается.');
+    if (extra) pays.push('«Встречный иск»: ответчик дополнительно получает ' + mln(extra) + '.');
+    meWon = G.me === G.df;
+  } else if (kind === 'tie') pays.push('Дело отложено: никто никому не платит.');
+  else if (kind === 'mir') pays.push('Мировое соглашение: никто никому не платит.');
+  else if (kind === 'appeal') pays.push('Решение отменено в апелляции: выплат нет.');
+  S.side = G.me.side; S.outcome = (kind === 'pl' || kind === 'df') ? (meWon ? 'победа' : 'поражение') : kind === 'mir' ? 'мир' : 'без решения';
+  render('<h2>Дело закрыто</h2><ul class="pay">' + pays.map(function(p){ return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' +
+    '<p style="margin-top:14px">Итог: у вас ' + mln(G.me.money) + ', у компьютера ' + mln(G.bot.money) + '. В полной игре таких дел девять раундов подряд, и всё это время нужно ещё развивать компанию.</p>' +
+    '<div class="row"><button class="btn btn-fill" id="go">Пройти тест ещё раз</button></div>' +
+    life('Судебные расходы — госпошлину, оплату представителей, экспертизы — возмещает проигравшая сторона. Расходы на представителей взыскиваются в разумных пределах.'), true);
+  document.getElementById('go').onclick = function(){ quiz(1); };
+}
+
+/* ===================== ИТОГИ ===================== */
+function results(){
+  var h = '<div class="screen">' + progress(4) + '<h1>Ваш результат</h1><div class="rule"><i></i></div>' +
+    '<div class="score"><div><b>' + S.before + '/5</b><span>до игры</span></div><div><b>' + S.after + '/5</b><span>после игры</span></div></div>' +
+    '<h2 style="margin-top:40px">Правильные ответы</h2>';
+  QUESTIONS.forEach(function(q, i){
+    var a = S.answersAfter[i];
+    h += '<div class="ans"><h3>' + (i + 1) + '. ' + esc(q.q) + '</h3>' +
+      '<div class="c">✓ ' + esc(q.options[q.correct]) + '</div>' +
+      (a !== q.correct ? '<div class="w">Ваш ответ: ' + esc(q.options[a]) + '</div>' : '') +
+      '<p>' + esc(q.explain) + '</p></div>';
+  });
+  h += '<h2 style="margin-top:40px">Все игроки</h2><div id="global"><p class="muted">Загружаем статистику…</p></div>' +
+    '<div class="row"><a class="btn btn-fill" href="index.html">На главную</a><button class="btn" id="again">Сыграть ещё раз</button></div></div>';
+  app.innerHTML = h; toTop();
+  document.getElementById('again').onclick = function(){ S.replay = true; chooseSide(); };
+  submit().then(loadGlobal);
+}
+function submit(){
+  var done = false;
+  try { done = localStorage.getItem('mbd_sent') === '1'; } catch(e){}
+  if (!CONFIG.formAction || S.replay || done) return Promise.resolve();
+  var body = new URLSearchParams();
+  body.append(CONFIG.fields.before, S.before);
+  body.append(CONFIG.fields.after, S.after);
+  if (CONFIG.fields.side) body.append(CONFIG.fields.side, S.side === 'ist' ? 'истец' : 'ответчик');
+  if (CONFIG.fields.result) body.append(CONFIG.fields.result, S.outcome);
+  return fetch(CONFIG.formAction, { method: 'POST', mode: 'no-cors', body: body })
+    .then(function(){ try { localStorage.setItem('mbd_sent', '1'); } catch(e){} })
+    .catch(function(){});
+}
+function parseCSV(t){
+  var rows = [], row = [], f = '', q = false;
+  for (var i = 0; i < t.length; i++){
+    var ch = t[i];
+    if (q){ if (ch === '"'){ if (t[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += ch; }
+    else if (ch === '"') q = true;
+    else if (ch === ','){ row.push(f); f = ''; }
+    else if (ch === '\n'){ row.push(f); rows.push(row); row = []; f = ''; }
+    else if (ch !== '\r') f += ch;
+  }
+  if (f || row.length){ row.push(f); rows.push(row); }
+  return rows;
+}
+function loadGlobal(){
+  var box = document.getElementById('global');
+  if (!CONFIG.csvUrl){ box.innerHTML = '<p class="muted">Общая статистика появится, когда к сайту подключат таблицу результатов.</p>'; return; }
+  fetch(CONFIG.csvUrl + (CONFIG.csvUrl.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now())
+    .then(function(r){ return r.text(); })
+    .then(function(t){
+      var rows = parseCSV(t), head = rows.shift() || [];
+      var ib = head.findIndex(function(x){ return /^до/i.test(x.trim()); });
+      var ia = head.findIndex(function(x){ return /^после/i.test(x.trim()); });
+      var b = [], a = [];
+      rows.forEach(function(r){ var x = parseFloat(r[ib]), y = parseFloat(r[ia]); if (!isNaN(x) && !isNaN(y)){ b.push(x); a.push(y); } });
+      if (!b.length){ box.innerHTML = '<p class="muted">Пока результатов нет — вы можете оказаться первым.</p>'; return; }
+      var avg = function(v){ return v.reduce(function(s, x){ return s + x; }, 0) / v.length; };
+      var ab = avg(b), aa = avg(a);
+      var better = b.filter(function(x, i){ return a[i] > x; }).length;
+      box.innerHTML = '<p>Тест прошли <b>' + b.length + '</b> чел. Средний балл:</p><div class="bars">' +
+        '<div class="bar"><span>До</span><i><em style="width:0" data-w="' + (ab / 5 * 100) + '"></em></i><b>' + ab.toFixed(1) + '</b></div>' +
+        '<div class="bar after"><span>После</span><i><em style="width:0" data-w="' + (aa / 5 * 100) + '"></em></i><b>' + aa.toFixed(1) + '</b></div></div>' +
+        '<p class="note">У ' + Math.round(better / b.length * 100) + '% игроков результат после заседания выше, чем до него. Статистика обновляется с задержкой в несколько минут.</p>';
+      setTimeout(function(){ box.querySelectorAll('em').forEach(function(e){ e.style.width = e.getAttribute('data-w') + '%'; }); }, 50);
+    })
+    .catch(function(){ box.innerHTML = '<p class="muted">Не удалось загрузить общую статистику. Попробуйте обновить страницу позже.</p>'; });
+}
+
+intro();
+</script>
+</body>
+</html>
