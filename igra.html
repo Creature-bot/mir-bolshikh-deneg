@@ -154,6 +154,22 @@ h2{font:italic 900 22px/1.15 var(--font);text-transform:uppercase;margin:0 0 12p
 .bar.after i em{background:var(--gold)}
 .bar b{font:italic 900 18px var(--font);text-align:right}
 .note{font-size:13.5px;color:var(--muted);margin-top:10px}
+
+/* карты на столе */
+.inhand{font-size:12px;color:var(--muted);margin-top:8px}
+.laid{align-items:flex-end}
+.tc{display:inline-flex;flex-direction:column;justify-content:space-between;width:58px;height:81px;border-radius:5px;overflow:hidden;box-shadow:0 6px 14px rgba(0,0,0,.6);font:600 9.5px/1.15 var(--font);padding:5px;text-align:left}
+.tc.back{padding:0;border:1px solid var(--gold-soft)}
+.tc.back img{width:100%;height:100%;object-fit:cover}
+.tc.face{border:1px solid var(--line);background:linear-gradient(180deg,#2a1210,#120f0c)}
+.tc.face.otv{background:linear-gradient(180deg,#10261a,#120f0c)}
+.tc.face b{font:italic 900 16px/1 var(--font);color:var(--gold)}
+.tc.face span{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.tc.gone{opacity:.35;text-decoration:line-through}
+.tc.flipin{animation:flipin .5s cubic-bezier(.2,.7,.2,1) both}
+@keyframes flipin{from{transform:rotateY(90deg);opacity:.3}to{transform:none;opacity:1}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--gold);color:#140e05;font:italic 800 14px var(--font);text-transform:uppercase;padding:12px 18px;z-index:50;box-shadow:0 10px 24px rgba(0,0,0,.6)}
+@media (prefers-reduced-motion:reduce){.tc.flipin{animation:none}.die.roll{animation:none}}
 </style>
 </head>
 <body>
@@ -178,21 +194,21 @@ var CONFIG = {
 
 /* ===================== ВОПРОСЫ ТЕСТА ===================== */
 var QUESTIONS = [
-  { q: 'Кто уплачивает госпошлину при подаче иска в арбитражный суд?',
-    options: ['Истец', 'Ответчик', 'Суд за счёт бюджета', 'Никто, обращение бесплатное'], correct: 0,
-    explain: 'Госпошлину платит истец при подаче иска. Если он выиграет, эти расходы ему возместит ответчик.' },
-  { q: 'Суд полностью удовлетворил иск. Кто в итоге несёт судебные расходы истца?',
-    options: ['Ответчик, как проигравшая сторона', 'Истец', 'Стороны пополам', 'Государство'], correct: 0,
-    explain: 'Судебные расходы возмещает проигравшая сторона (ст. 110 АПК РФ). Расходы на представителей — в разумных пределах.' },
-  { q: 'Что такое мировое соглашение?',
-    options: ['Договорённость сторон об урегулировании спора, которую утверждает суд', 'Отказ истца от иска', 'Решение суда в пользу обеих сторон', 'Перенос заседания по просьбе сторон'], correct: 0,
-    explain: 'Стороны сами договариваются, как закончить спор, а суд утверждает соглашение. После этого производство по делу прекращается.' },
-  { q: 'Какое доказательство суд не примет?',
-    options: ['Полученное с нарушением закона', 'Письменный договор', 'Заключение эксперта', 'Показания свидетеля'], correct: 0,
-    explain: 'Доказательства, полученные с нарушением федерального закона, недопустимы (ст. 68 АПК РФ). Фальсификация доказательств — преступление.' },
-  { q: 'Как обжаловать решение суда первой инстанции, которое ещё не вступило в силу?',
-    options: ['Подать апелляционную жалобу', 'Подать кассационную жалобу', 'Обратиться в Конституционный суд', 'Написать в прокуратуру'], correct: 0,
-    explain: 'Не вступившее в силу решение обжалуют в апелляционном порядке. Срок — месяц со дня принятия решения (ст. 259 АПК РФ).' }
+  { q: 'Кто и когда уплачивает госпошлину по иску в арбитражный суд?',
+    options: ['Истец — при подаче иска', 'Ответчик — после получения копии иска', 'Истец — после решения, если проиграл дело', 'Стороны поровну — на предварительном заседании'], correct: 0,
+    explain: 'Госпошлину платит истец при подаче иска, её размер зависит от суммы требований. Если истец выиграет, расходы на пошлину ему возместит ответчик.' },
+  { q: 'Суд полностью удовлетворил иск. Как распределяются судебные расходы истца?',
+    options: ['Их возмещает ответчик, расходы на представителей — в разумных пределах', 'Их возмещает ответчик в полном объёме, без каких-либо ограничений', 'Каждая сторона несёт свои расходы сама, независимо от исхода', 'Ответчик возмещает только госпошлину, остальное остаётся на истце'], correct: 0,
+    explain: 'Судебные расходы возмещает проигравшая сторона, но расходы на представителей взыскиваются только в разумных пределах (ст. 110 АПК РФ).' },
+  { q: 'Что происходит, когда стороны заключают мировое соглашение в арбитражном процессе?',
+    options: ['Суд утверждает его, и производство по делу прекращается', 'Суд утверждает его, но продолжает рассматривать дело по существу', 'Соглашение действует без участия суда и не влияет на ход дела', 'Его можно заключить только до того, как суд принял иск'], correct: 0,
+    explain: 'Мировое соглашение можно заключить на любой стадии процесса. Его утверждает суд, после чего производство по делу прекращается.' },
+  { q: 'Какое доказательство арбитражный суд не примет?',
+    options: ['Документ, полученный с нарушением федерального закона', 'Деловую переписку сторон по электронной почте', 'Копию договора, заверенную одной из сторон', 'Показания сотрудника компании-истца'], correct: 0,
+    explain: 'Доказательства, полученные с нарушением федерального закона, недопустимы (ст. 68 АПК РФ). Переписка, заверенные копии и показания свидетелей суд оценивает наравне с другими доказательствами.' },
+  { q: 'Решение арбитражного суда первой инстанции ещё не вступило в силу. Как и в какой срок его обжаловать?',
+    options: ['Апелляционной жалобой, в течение месяца', 'Апелляционной жалобой, в течение десяти дней', 'Кассационной жалобой, в течение двух месяцев', 'Кассационной жалобой, в течение месяца'], correct: 0,
+    explain: 'Не вступившее в силу решение обжалуют в апелляции в течение месяца (ст. 259 АПК РФ). Кассационную жалобу подают позже — на решение, которое уже вступило в силу.' }
 ];
 
 /* ===================== КАРТЫ (упрощённые) ===================== */
@@ -258,6 +274,7 @@ function intro(){
     '<div class="screen">' +
     '<h1>Сыграйте<br>одно заседание</h1><div class="rule"><i></i></div>' +
     '<p class="lead">Короткая версия настольной игры: одно судебное дело против компьютера. Займёт около пяти минут.</p>' +
+    '<p class="muted" style="margin-top:10px"><a href="#stats">Сразу к результатам игроков</a></p>' +
     '<ol class="plan">' +
       '<li><b>1</b><div><strong>Тест</strong><span>Пять вопросов об арбитражном процессе. Ответьте, как знаете.</span></div></li>' +
       '<li><b>2</b><div><strong>Выбор стороны</strong><span>Подайте иск или защищайтесь от него.</span></div></li>' +
@@ -265,8 +282,10 @@ function intro(){
       '<li><b>4</b><div><strong>Тот же тест ещё раз</strong><span>Посмотрим, что изменилось.</span></div></li>' +
       '<li><b>5</b><div><strong>Итоги</strong><span>Ваш результат, правильные ответы и общая статистика всех игроков.</span></div></li>' +
     '</ol>' +
-    '<div class="row"><button class="btn btn-fill" id="go">Начать</button></div></div>';
+    '<div class="row"><button class="btn btn-fill" id="go">Начать</button></div>' +
+    '<h2 style="margin-top:56px" id="stats">Результаты игроков</h2><div id="introStats"><p class="muted">Загружаем статистику…</p></div></div>';
   document.getElementById('go').onclick = function(){ quiz(0); };
+  loadStats(document.getElementById('introStats'));
 }
 
 /* ===================== ЭКРАН: ТЕСТ ===================== */
@@ -345,11 +364,11 @@ function strength(p){
   if (j !== null){ if (p === G.pl && j <= 2) s += 1; if (p === G.df && j >= 5) s += 1; }
   return s;
 }
-function laidHtml(p, open){
+function laidHtml(p, open, flip){
   if (!p.laid.length) return '<span class="muted" style="font-size:12.5px">Карт на столе нет</span>';
-  return p.laid.map(function(c){
-    if (!open) return '<span class="mini back">рубашкой вверх</span>';
-    return '<span class="mini' + (c.gone ? ' gone' : '') + '">' + esc(c.n) + (c.p ? ' <b>+' + c.p + '</b>' : '') + '</span>';
+  return p.laid.map(function(c, i){
+    if (!open) return '<span class="tc back ' + p.side + '"><img src="img/cards/back-' + (p.side === 'ist' ? 'istec' : 'otvetchik') + '.webp" alt=""></span>';
+    return '<span class="tc face ' + p.side + (c.gone ? ' gone' : '') + (flip ? ' flipin' : '') + '" style="animation-delay:' + (i * 0.18) + 's"><b>' + (c.p ? '+' + c.p : '0') + '</b><span>' + esc(c.n) + '</span></span>';
   }).join('');
 }
 function board(revealed){
@@ -359,7 +378,8 @@ function board(revealed){
   function party(p, me){
     return '<div class="party ' + (me ? 'me' : 'bot') + '"><h3>' + (me ? 'Вы' : 'Компьютер') + ' <span class="tag ' + p.side + '">' + sideName(p) + '</span></h3>' +
       '<div class="stats"><div><b>' + mln(p.money) + '</b>деньги</div><div><b>+' + p.lawyer.b + '</b>' + esc(p.lawyer.n) + '</div><div><b>' + p.token + '</b>жетон влияния</div></div>' +
-      '<div class="laid">' + laidHtml(p, me || revealed) + '</div></div>';
+      (me ? '' : '<div class="inhand" id="botHand">В руке: ' + p.hand.length + ' карт</div>') +
+      '<div class="laid" id="laid-' + (me ? 'me' : 'bot') + '">' + laidHtml(p, me || revealed, !me && revealed && G.flipNow) + '</div></div>';
   }
   var showPw = revealed;
   return '<div class="table">' + party(G.bot, false) + party(G.me, true) +
@@ -399,7 +419,7 @@ function fileClaim(c, byBot){
   render('<h2>Иск подан</h2><p>' + (byBot ? 'Компьютер подал против вас иск на ' + mln(c) + ' и заплатил госпошлину ' + mln(G.duty) + '.' : 'Вы подали иск на ' + mln(c) + ' и заплатили госпошлину ' + mln(G.duty) + '.') + '</p>' +
     '<p>Теперь кубик определит настроение судьи. Это происходит до того, как стороны выложат карты.</p>' +
     '<div class="row"><button class="btn btn-fill" id="go">Бросить кубик судьи</button></div>' +
-    (byBot ? life('Ответчик получает копию иска и может заранее подготовить отзыв: письменные возражения с доказательствами.') : life('Перед подачей иска в большинстве споров между компаниями нужно сначала направить ответчику претензию и подождать ответа.')), false);
+    (byBot ? life('Госпошлину платит истец при подаче иска. Ответчик получает копию иска и может заранее подготовить отзыв: письменные возражения с доказательствами.') : life('Перед подачей иска в большинстве споров между компаниями нужно сначала направить ответчику претензию и подождать ответа.')), false);
   document.getElementById('go').onclick = stepJudge;
 }
 
@@ -421,53 +441,85 @@ function stepJudge(){
   });
 }
 
-/* шаг 3: выкладка карт */
+/* шаг 3: выкладка карт по очереди, как в настольной версии */
 function stepLay(){
-  var me = G.me, sel = {};
-  function cost(){ var s = 0; me.hand.forEach(function(c){ if (sel[c.id]) s += c.c; }); return s; }
-  function draw(){
-    var h = '<h2>Выложите карты</h2><p>Выберите карты для заседания. Каждая карта стоит денег — это судебные издержки. Компьютер тоже выбирает карты, вы увидите их после вскрытия.</p><div class="hand">';
-    me.hand.forEach(function(c){
-      var keep = c.t === 'react' || c.t === 'appeal';
-      var off = !keep && !sel[c.id] && cost() + c.c > me.money;
-      h += '<button class="gc ' + me.side + (sel[c.id] ? ' sel' : '') + (keep ? ' keep' : '') + (off ? ' off' : '') + '" data-id="' + c.id + '"' + (keep || off ? ' tabindex="-1"' : '') + '>' +
-        '<span class="tp"><span>' + (c.p ? '+' + c.p : '0') + '<small>сила</small></span><span style="text-align:right">' + c.c + '<small>млн</small></span></span>' +
-        '<span class="nm">' + esc(c.n) + '</span>' + (c.fx ? '<span class="fx">' + esc(c.fx) + '</span>' : '') +
-        (c.v ? '<span class="vul">Уязвимая</span>' : '') + '</button>';
-    });
-    h += '</div><p class="budget">Издержки: <b>' + mln(cost()) + '</b> из ' + mln(me.money) + '. Карты с пунктирной рамкой остаются в руке и сработают позже.</p>' +
-      '<div class="row"><button class="btn btn-fill" id="go">Выложить и вскрыть</button></div>' +
-      life('Каждая сторона должна доказать обстоятельства, на которые ссылается, и раскрыть свои доказательства до начала заседания.');
-    render(h, false);
-    app.querySelectorAll('.gc').forEach(function(b){
-      b.onclick = function(){
-        var c = me.hand.filter(function(x){ return x.id === b.getAttribute('data-id'); })[0];
-        if (c.t === 'react' || c.t === 'appeal') return;
-        if (!sel[c.id] && cost() + c.c > me.money) return;
-        sel[c.id] = !sel[c.id]; draw();
-      };
-    });
-    document.getElementById('go').onclick = function(){
-      me.laid = me.hand.filter(function(c){ return sel[c.id]; });
-      me.hand = me.hand.filter(function(c){ return !sel[c.id]; });
-      botLay(); payCosts(); stepReveal();
-    };
-  }
-  draw();
+  G.passes = 0; G.turn = G.pl; G.plan = botPlan();
+  layTurn();
 }
-function botLay(){
+function botPlan(){
   var b = G.bot, budget = b.money - 1; // оставить деньги на реакцию
   var cands = b.hand.filter(function(c){ return c.t === 'power' || c.t === 'counter'; })
     .filter(function(c){ return !c.v || Math.random() < 0.6; })
     .sort(function(x, y){ return (y.p / (y.c + 0.5)) - (x.p / (x.c + 0.5)); });
-  var spent = 0, laid = [];
-  cands.forEach(function(c){ if (spent + c.c <= budget && laid.length < 3){ laid.push(c); spent += c.c; } });
-  var total = laid.reduce(function(s, c){ return s + c.p; }, 0);
-  if (total < 5 && Math.random() < 0.5) laid.push(b.hand.filter(function(c){ return c.t === 'mir'; })[0]);
-  b.laid = laid; b.hand = b.hand.filter(function(c){ return laid.indexOf(c) < 0; });
+  var spent = 0, plan = [];
+  cands.forEach(function(c){ if (spent + c.c <= budget && plan.length < 3){ plan.push(c); spent += c.c; } });
+  var total = plan.reduce(function(s, c){ return s + c.p; }, 0);
+  if (total < 5 && Math.random() < 0.5) plan.splice(Math.floor(Math.random() * (plan.length + 1)), 0, b.hand.filter(function(c){ return c.t === 'mir'; })[0]);
+  return plan;
+}
+function laidCost(p){ return p.laid.reduce(function(s, c){ return s + c.c; }, 0); }
+function layTurn(){
+  if (G.passes >= 2){ payCosts(); G.flipNow = true; stepReveal(); G.flipNow = false; return; }
+  if (G.turn === G.bot){ drawLay(true); setTimeout(botMove, 900); }
+  else drawLay(false);
+}
+function drawLay(botTurn){
+  var me = G.me, budget = me.money - laidCost(me);
+  var h = '<h2>' + (botTurn ? 'Ход компьютера…' : 'Ваш ход') + '</h2>' +
+    '<p>' + (botTurn ? 'Компьютер решает, выложить карту или спасовать.' :
+      'Нажмите на карту, чтобы выложить её на стол рубашкой вверх. Стороны ходят по очереди, пока обе не спасуют. Каждая карта стоит денег — это судебные издержки.') + '</p><div class="hand">';
+  me.hand.forEach(function(c){
+    var keep = c.t === 'react' || c.t === 'appeal';
+    var off = botTurn || keep || c.c > budget;
+    h += '<button class="gc ' + me.side + (keep ? ' keep' : '') + (off && !keep ? ' off' : '') + '" data-id="' + c.id + '"' + (off ? ' tabindex="-1"' : '') + '>' +
+      '<span class="tp"><span>' + (c.p ? '+' + c.p : '0') + '<small>сила</small></span><span style="text-align:right">' + c.c + '<small>млн</small></span></span>' +
+      '<span class="nm">' + esc(c.n) + '</span>' + (c.fx ? '<span class="fx">' + esc(c.fx) + '</span>' : '') +
+      (c.v ? '<span class="vul">Уязвимая</span>' : '') + '</button>';
+  });
+  h += '</div><p class="budget">Осталось на издержки: <b>' + mln(budget) + '</b>. Карты с пунктирной рамкой остаются в руке и сработают позже.</p>' +
+    '<div class="row"><button class="btn btn-fill" id="pass"' + (botTurn ? ' disabled' : '') + '>Пас</button></div>' +
+    life('Каждая сторона должна доказать обстоятельства, на которые ссылается, и раскрыть доказательства до начала заседания. А помириться стороны могут на любой стадии: мировое соглашение утверждает суд, и дело прекращается.');
+  render(h, false);
+  if (botTurn) return;
+  app.querySelectorAll('.gc').forEach(function(b){
+    b.onclick = function(){
+      var c = me.hand.filter(function(x){ return x.id === b.getAttribute('data-id'); })[0];
+      if (!c || c.t === 'react' || c.t === 'appeal' || c.c > budget) return;
+      var from = b.getBoundingClientRect();
+      me.hand = me.hand.filter(function(x){ return x !== c; }); me.laid.push(c);
+      G.passes = 0; G.turn = G.bot;
+      layTurn(); flyIn('laid-me', from);
+    };
+  });
+  document.getElementById('pass').onclick = function(){ G.passes++; G.turn = G.bot; layTurn(); };
+}
+function botMove(){
+  var b = G.bot;
+  var next = G.plan.length && G.plan[0].c <= b.money - laidCost(b) ? G.plan.shift() : null;
+  if (next){
+    var src = document.getElementById('botHand'); var from = src ? src.getBoundingClientRect() : null;
+    b.hand = b.hand.filter(function(x){ return x !== next; }); b.laid.push(next);
+    G.passes = 0; G.turn = G.me; layTurn(); if (from) flyIn('laid-bot', from);
+  } else {
+    G.passes++; G.turn = G.me;
+    if (G.passes < 2){ layTurn(); toast('Компьютер пасует'); } else layTurn();
+  }
+}
+function flyIn(containerId, from){
+  var box = document.getElementById(containerId); if (!box || !from || !box.lastElementChild) return;
+  var t = box.lastElementChild, to = t.getBoundingClientRect();
+  if (!t.animate || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var dx = from.left + from.width / 2 - (to.left + to.width / 2), dy = from.top + from.height / 2 - (to.top + to.height / 2);
+  var sc = Math.max(0.6, Math.min(2.4, from.width / to.width));
+  t.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sc + ') rotate(-8deg)', opacity: .9 }, { transform: 'none', opacity: 1 }], { duration: 520, easing: 'cubic-bezier(.2,.7,.2,1)' });
+}
+function toast(t){
+  var d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.appendChild(d);
+  setTimeout(function(){ d.remove(); }, 1600);
 }
 function payCosts(){
-  [G.me, G.bot].forEach(function(p){ var s = 0; p.laid.forEach(function(c){ s += c.c; }); p.money -= s; p.spent = s; });
+  if (G.paid) return; G.paid = true;
+  [G.me, G.bot].forEach(function(p){ var s = laidCost(p); p.money -= s; p.spent = s; });
 }
 
 /* шаг 4: вскрытие, реакции, мировое */
@@ -590,7 +642,7 @@ function appeal(p){
   var v = d6();
   render('<h2>Апелляция</h2><p>' + (p === G.me ? 'Вы подали' : 'Компьютер подал') + ' апелляционную жалобу. Бросок: 3–6 — решение отменяется.</p>' +
     '<div class="rolls"><div class="r"><div class="die" id="adie">?</div></div></div><div id="after"></div>' +
-    life('Апелляционный суд заново проверяет дело и может оставить решение в силе, изменить его или отменить.'), true);
+    life('Апелляционный суд заново проверяет дело и может оставить решение в силе, изменить его или отменить. Кассационную жалобу подают позже, когда решение уже вступило в силу.'), true);
   rollAnim('adie', v, function(){
     var a = document.getElementById('after');
     if (v >= 3){
@@ -669,8 +721,14 @@ function submit(){
   }
   attempt(2);
 }
-function showStats(st){
-  var box = document.getElementById('global');
+function loadStats(box){
+  if (!CONFIG.scriptUrl){ box.innerHTML = '<p class="muted">Общая статистика появится, когда к сайту подключат таблицу результатов.</p>'; return; }
+  fetch(CONFIG.scriptUrl + '?t=' + Date.now()).then(function(r){ return r.json(); })
+    .then(function(st){ showStats(st, box); })
+    .catch(function(){ box.innerHTML = '<p class="muted">Не удалось загрузить статистику. Попробуйте обновить страницу позже.</p>'; });
+}
+function showStats(st, box){
+  box = box || document.getElementById('global');
   if (!st || !st.count){ box.innerHTML = '<p class="muted">Пока результатов нет — вы можете оказаться первым.</p>'; return; }
   box.innerHTML = '<p>Тест прошли <b>' + st.count + '</b> чел. Средний балл:</p><div class="bars">' +
     '<div class="bar"><span>До</span><i><em style="width:0" data-w="' + (st.avgBefore / 5 * 100) + '"></em></i><b>' + st.avgBefore.toFixed(1) + '</b></div>' +
