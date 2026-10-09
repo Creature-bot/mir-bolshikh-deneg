@@ -167,14 +167,13 @@ h2{font:italic 900 22px/1.15 var(--font);text-transform:uppercase;margin:0 0 12p
 
 <script>
 /* ==========================================================
-   НАСТРОЙКА СБОРА РЕЗУЛЬТАТОВ (Google Форма + Таблица)
-   Пока поля пустые, общий результат не показывается,
+   НАСТРОЙКА СБОРА РЕЗУЛЬТАТОВ (Google Apps Script)
+   Вставьте сюда адрес веб-приложения, он заканчивается на /exec.
+   Пока строка пустая, общий результат не показывается,
    а игра и тесты работают как обычно.
    ========================================================== */
 var CONFIG = {
-  formAction: '',            // https://docs.google.com/forms/d/e/…/formResponse
-  fields: { before: '', after: '', side: '', result: '' },   // entry.123456789 и т.д.
-  csvUrl: ''                 // https://docs.google.com/spreadsheets/d/e/…/pub?output=csv
+  scriptUrl: 'https://script.google.com/macros/s/AKfycbw5s7NmANT3LYS6-Ybw2STXSBwEvG--UUI-pPmcg0Y-jP2HzVzRmCgxLJxn1aTlmdN0/exec'
 };
 
 /* ===================== ВОПРОСЫ ТЕСТА ===================== */
@@ -646,56 +645,38 @@ function results(){
     '<div class="row"><a class="btn btn-fill" href="index.html">На главную</a><button class="btn" id="again">Сыграть ещё раз</button></div></div>';
   app.innerHTML = h; toTop();
   document.getElementById('again').onclick = function(){ S.replay = true; chooseSide(); };
-  submit().then(loadGlobal);
+  submit();
 }
 function submit(){
-  var done = false;
-  try { done = localStorage.getItem('mbd_sent') === '1'; } catch(e){}
-  if (!CONFIG.formAction || S.replay || done) return Promise.resolve();
-  var body = new URLSearchParams();
-  body.append(CONFIG.fields.before, S.before);
-  body.append(CONFIG.fields.after, S.after);
-  if (CONFIG.fields.side) body.append(CONFIG.fields.side, S.side === 'ist' ? 'истец' : 'ответчик');
-  if (CONFIG.fields.result) body.append(CONFIG.fields.result, S.outcome);
-  return fetch(CONFIG.formAction, { method: 'POST', mode: 'no-cors', body: body })
-    .then(function(){ try { localStorage.setItem('mbd_sent', '1'); } catch(e){} })
-    .catch(function(){});
-}
-function parseCSV(t){
-  var rows = [], row = [], f = '', q = false;
-  for (var i = 0; i < t.length; i++){
-    var ch = t[i];
-    if (q){ if (ch === '"'){ if (t[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += ch; }
-    else if (ch === '"') q = true;
-    else if (ch === ','){ row.push(f); f = ''; }
-    else if (ch === '\n'){ row.push(f); rows.push(row); row = []; f = ''; }
-    else if (ch !== '\r') f += ch;
-  }
-  if (f || row.length){ row.push(f); rows.push(row); }
-  return rows;
-}
-function loadGlobal(){
   var box = document.getElementById('global');
-  if (!CONFIG.csvUrl){ box.innerHTML = '<p class="muted">Общая статистика появится, когда к сайту подключат таблицу результатов.</p>'; return; }
-  fetch(CONFIG.csvUrl + (CONFIG.csvUrl.indexOf('?') < 0 ? '?' : '&') + 't=' + Date.now())
-    .then(function(r){ return r.text(); })
-    .then(function(t){
-      var rows = parseCSV(t), head = rows.shift() || [];
-      var ib = head.findIndex(function(x){ return /^до/i.test(x.trim()); });
-      var ia = head.findIndex(function(x){ return /^после/i.test(x.trim()); });
-      var b = [], a = [];
-      rows.forEach(function(r){ var x = parseFloat(r[ib]), y = parseFloat(r[ia]); if (!isNaN(x) && !isNaN(y)){ b.push(x); a.push(y); } });
-      if (!b.length){ box.innerHTML = '<p class="muted">Пока результатов нет — вы можете оказаться первым.</p>'; return; }
-      var avg = function(v){ return v.reduce(function(s, x){ return s + x; }, 0) / v.length; };
-      var ab = avg(b), aa = avg(a);
-      var better = b.filter(function(x, i){ return a[i] > x; }).length;
-      box.innerHTML = '<p>Тест прошли <b>' + b.length + '</b> чел. Средний балл:</p><div class="bars">' +
-        '<div class="bar"><span>До</span><i><em style="width:0" data-w="' + (ab / 5 * 100) + '"></em></i><b>' + ab.toFixed(1) + '</b></div>' +
-        '<div class="bar after"><span>После</span><i><em style="width:0" data-w="' + (aa / 5 * 100) + '"></em></i><b>' + aa.toFixed(1) + '</b></div></div>' +
-        '<p class="note">У ' + Math.round(better / b.length * 100) + '% игроков результат после заседания выше, чем до него. Статистика обновляется с задержкой в несколько минут.</p>';
-      setTimeout(function(){ box.querySelectorAll('em').forEach(function(e){ e.style.width = e.getAttribute('data-w') + '%'; }); }, 50);
-    })
-    .catch(function(){ box.innerHTML = '<p class="muted">Не удалось загрузить общую статистику. Попробуйте обновить страницу позже.</p>'; });
+  if (!CONFIG.scriptUrl){ box.innerHTML = '<p class="muted">Общая статистика появится, когда к сайту подключат таблицу результатов.</p>'; return; }
+  var sent = false;
+  try { sent = localStorage.getItem('mbd_sent') === '1'; } catch(e){}
+  var url = CONFIG.scriptUrl + '?t=' + Date.now();
+  if (!sent && !S.replay){
+    url += '&before=' + S.before + '&after=' + S.after +
+      '&side=' + encodeURIComponent(S.side === 'ist' ? 'истец' : 'ответчик') +
+      '&result=' + encodeURIComponent(S.outcome || '');
+  }
+  function attempt(n){
+    return fetch(url).then(function(r){ return r.json(); }).then(function(st){
+      if (!sent && !S.replay){ try { localStorage.setItem('mbd_sent', '1'); } catch(e){} }
+      showStats(st);
+    }).catch(function(){
+      if (n > 0) return new Promise(function(res){ setTimeout(res, 1500); }).then(function(){ return attempt(n - 1); });
+      box.innerHTML = '<p class="muted">Не удалось загрузить общую статистику. Попробуйте обновить страницу позже.</p>';
+    });
+  }
+  attempt(2);
+}
+function showStats(st){
+  var box = document.getElementById('global');
+  if (!st || !st.count){ box.innerHTML = '<p class="muted">Пока результатов нет — вы можете оказаться первым.</p>'; return; }
+  box.innerHTML = '<p>Тест прошли <b>' + st.count + '</b> чел. Средний балл:</p><div class="bars">' +
+    '<div class="bar"><span>До</span><i><em style="width:0" data-w="' + (st.avgBefore / 5 * 100) + '"></em></i><b>' + st.avgBefore.toFixed(1) + '</b></div>' +
+    '<div class="bar after"><span>После</span><i><em style="width:0" data-w="' + (st.avgAfter / 5 * 100) + '"></em></i><b>' + st.avgAfter.toFixed(1) + '</b></div></div>' +
+    '<p class="note">У ' + Math.round(st.improved * 100) + '% игроков результат после заседания выше, чем до него.</p>';
+  setTimeout(function(){ box.querySelectorAll('em').forEach(function(e){ e.style.width = e.getAttribute('data-w') + '%'; }); }, 50);
 }
 
 intro();
